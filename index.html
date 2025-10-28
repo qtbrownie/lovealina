@@ -24,15 +24,16 @@
     .hearts i:before,.hearts i:after{content:'';position:absolute;width:28px;height:28px;background:var(--accent);border-radius:50%}
     .hearts i:before{top:-14px;left:0}
     .hearts i:after{left:-14px;top:0}
+    
     @keyframes heartExplosion {
-    0% { transform: scale(1) rotate(45deg); opacity: 1; }
-    50% { transform: scale(1.5) rotate(45deg); opacity: 0.7; }
-    100% { transform: scale(2) rotate(45deg); opacity: 0; }
-}
-.heart-explode {
-    animation: heartExplosion 0.6s ease-out forwards;
-    pointer-events: none;
-}
+      0% { transform: scale(1) rotate(45deg); opacity: 1; }
+      50% { transform: scale(1.5) rotate(45deg); opacity: 0.7; }
+      100% { transform: scale(2) rotate(45deg); opacity: 0; }
+    }
+    .heart-explode {
+      animation: heartExplosion 0.6s ease-out forwards;
+      pointer-events: none;
+    }
 
     .card{
       width:min(760px,96vw);
@@ -486,30 +487,61 @@
           <button class="continue">Продолжить</button>
         </div>
 
-        <div class="spoilers" id="spoilers">
+        <div class="spoiler" id="s3">
+          <h3>Сюрприз</h3>
+          <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
+          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
+          <button class="continue">Продолжить</button>
+        </div>
 
-        <div class="spoiler" id="s2">
-    <h3>Сюрприз</h3>
-    <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
-    <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
-    <button class="continue">Продолжить</button>
-  </div>
-          
-    <details>
-      <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
-      <div class="polaroid">
-        <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
+        <div class="spoiler" id="s4">
+          <details>
+            <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
+            <div class="polaroid">
+              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
+            </div>
+          </details>
+          <button class="continue">Продолжить</button>
+        </div>
       </div>
-    </details>
-    
-    <button class="continue">Продолжить</button>
-  </div>
-</div>
 
     <footer>Пробовала ловить "Нет"? Эта тварь неуловима</footer>
   </div>
 
   <script>
+    // Функция для создания частиц при взрыве (должна быть в глобальной области видимости)
+    function createParticles(rect) {
+        const particleCount = 8;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 6px;
+                height: 6px;
+                background: var(--accent);
+                border-radius: 50%;
+                left: ${rect.left + rect.width/2}px;
+                top: ${rect.top + rect.height/2}px;
+                pointer-events: none;
+                z-index: 1000;
+            `;
+            
+            const angle = (i / particleCount) * Math.PI * 2;
+            const distance = 30 + Math.random() * 40;
+            const duration = 0.8 + Math.random() * 0.4;
+            
+            particle.style.transition = `all ${duration}s ease-out`;
+            document.body.appendChild(particle);
+            
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                particle.style.opacity = '0';
+            });
+            
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
+    }
+
     // БАЗОВЫЙ ФУНКЦИОНАЛ
     // create floating hearts
     const heartsRoot = document.querySelector('.hearts');
@@ -520,92 +552,59 @@
       const dur = 8 + Math.random()*12;
       el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
       heartsRoot.appendChild(el);
-        el.addEventListener('click', function() {
-    this.style.pointerEvents = 'none';
-    this.classList.add('heart-explode');
-    
-    // Создаем маленькие частицы при клике
-    createParticles(this.getBoundingClientRect());
-    
-    setTimeout(() => {
-        if (this.parentElement) {
-            this.parentElement.removeChild(this);
-        }
-    }, 800);
-});
-
-// Функция для создания частиц при взрыве
-function createParticles(rect) {
-    const particleCount = 8;
-    for (let i = 0; i < particleCount; i++) {
-        const particle = document.createElement('div');
-        particle.style.cssText = `
-            position: fixed;
-            width: 6px;
-            height: 6px;
-            background: var(--accent);
-            border-radius: 50%;
-            left: ${rect.left + rect.width/2}px;
-            top: ${rect.top + rect.height/2}px;
-            pointer-events: none;
-            z-index: 1000;
-        `;
-        
-        const angle = (i / particleCount) * Math.PI * 2;
-        const distance = 30 + Math.random() * 40;
-        const duration = 0.8 + Math.random() * 0.4;
-        
-        particle.style.transition = `all ${duration}s ease-out`;
-        document.body.appendChild(particle);
-        
-        requestAnimationFrame(() => {
-            particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
-            particle.style.opacity = '0';
-        });
-        
-        setTimeout(() => particle.remove(), duration * 1000);
-    }
-}
+      
+      el.addEventListener('click', function() {
+        this.style.pointerEvents = 'none';
+        this.classList.add('heart-explode');
+        createParticles(this.getBoundingClientRect());
+        setTimeout(() => {
+            if (this.parentElement) {
+                this.parentElement.removeChild(this);
+            }
+        }, 800);
+      });
+      
       requestAnimationFrame(()=>{
         el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
         el.style.opacity = 0;
       });
       setTimeout(()=>el.remove(), (dur+0.5)*1000);
     }
+    
     // spawn hearts occasionally
     setInterval(()=>{ for(let i=0;i<6;i++) makeHeart(); }, 700);
 
     // playful NO button
-const noBtn = document.getElementById('noBtn');
-const yesBtn = document.getElementById('yesBtn');
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
 
-function moveNo(){
-    const rect = noBtn.getBoundingClientRect();
-    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-    const btnWidth = rect.width;
-    const btnHeight = rect.height;
-    
-    // Ограничиваем координаты, чтобы кнопка не выходила за экран
-    const maxX = vw - btnWidth - 10; // 10px отступ от края
-    const maxY = vh - btnHeight - 10;
-    
-    const x = Math.random() * maxX;
-    const y = Math.random() * maxY;
-    
-    noBtn.style.position = 'fixed';
-    noBtn.style.left = Math.max(10, x) + 'px'; // минимум 10px от левого края
-    noBtn.style.top = Math.max(10, y) + 'px'; // минимум 10px от верхнего края
-    noBtn.classList.add('chase');
-}
+    function moveNo(){
+        const rect = noBtn.getBoundingClientRect();
+        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const btnWidth = rect.width;
+        const btnHeight = rect.height;
+        
+        // Ограничиваем координаты, чтобы кнопка не выходила за экран
+        const maxX = vw - btnWidth - 10; // 10px отступ от края
+        const maxY = vh - btnHeight - 10;
+        
+        const x = Math.random() * maxX;
+        const y = Math.random() * maxY;
+        
+        noBtn.style.position = 'fixed';
+        noBtn.style.left = Math.max(10, x) + 'px'; // минимум 10px от левого края
+        noBtn.style.top = Math.max(10, y) + 'px'; // минимум 10px от верхнего края
+        noBtn.classList.add('chase');
+    }
 
-noBtn.addEventListener('mouseenter', moveNo);
-noBtn.addEventListener('focus', moveNo);
+    noBtn.addEventListener('mouseenter', moveNo);
+    noBtn.addEventListener('focus', moveNo);
 
-noBtn.addEventListener('click', (e)=>{
-    e.preventDefault();
-    alert('Ох, как же так — даже кнопка не устояла 😉');
-});
+    noBtn.addEventListener('click', (e)=>{
+        e.preventDefault();
+        alert('Ох, как же так — даже кнопка не устояла 😉');
+    });
 
     // reveal spoilers sequentially when user clicks YES
     const spoilers = Array.from(document.querySelectorAll('.spoiler'));
