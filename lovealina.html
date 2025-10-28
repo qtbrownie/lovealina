@@ -1,0 +1,790 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>lovealina</title>
+  <style>
+    :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a}
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+      background: radial-gradient(circle at 10% 10%, rgba(255,220,230,0.7), transparent 20%),
+                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      display:flex;align-items:flex-start;justify-content:center;padding:32px;color:#3b2a33;
+      overflow-y:auto;
+      min-height:100vh;
+    }
+
+    /* floating hearts */
+    .hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
+    .hearts i{position:absolute;display:block;width:28px;height:28px;background:var(--accent);transform:rotate(45deg);border-radius:4px;opacity:0.9}
+    .hearts i:before,.hearts i:after{content:'';position:absolute;width:28px;height:28px;background:var(--accent);border-radius:50%}
+    .hearts i:before{top:-14px;left:0}
+    .hearts i:after{left:-14px;top:0}
+
+    .card{
+      width:min(760px,96vw);
+      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,250,252,0.9));
+      border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(78,30,60,0.12);
+      position:relative;z-index:2;backdrop-filter: blur(6px);
+      margin:20px 0;
+    }
+    .header{display:flex;gap:16px;align-items:center}
+    .logo{
+      width:76px;height:76px;border-radius:18px;background:conic-gradient(from 200deg at 50% 50%, #ffd3e6, #ff9cc0 30%, #ff6b95 60%);
+      display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,110,150,0.15)
+    }
+    .logo svg{width:48px;height:48px;filter:drop-shadow(0 6px 10px rgba(255,110,150,0.12))}
+    h1{font-size:1.6rem;margin:0}
+    p.lead{margin:8px 0 0;color:#5b3f47}
+
+    .question{margin-top:22px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,245,247,0.9), rgba(255,240,244,0.8));border:1px solid rgba(255,200,220,0.6)}
+    .q-text{font-size:1.25rem;margin:0 0 16px}
+    .buttons{display:flex;gap:12px;align-items:center}
+    button{cursor:pointer;border:0;padding:12px 18px;border-radius:12px;font-weight:600}
+    .yes{background:linear-gradient(90deg,#ff7aa3,#ff5480);color:white;box-shadow:0 8px 18px rgba(255,100,140,0.18)}
+    .no{background:#fff;border:2px solid var(--accent);min-width:84px;transition:transform 0.35s ease, left 0.35s ease, top 0.35s ease;}
+
+    /* reveal spoilers */
+    .spoilers{margin-top:18px;display:grid;gap:12px}
+    .spoiler{background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(200,150,170,0.12);overflow:hidden;max-height:0;opacity:0;transition:max-height 450ms ease,opacity 350ms ease,padding 350ms}
+    .spoiler.open{max-height:600px;opacity:1;padding:14px;overflow-y:auto}
+    .spoiler h3{margin:0 0 6px}
+    .continue{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#ffd6e7,#ffb0d0);font-weight:700}
+
+    footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
+
+    /* playful little cursor-chase for NO */
+    .no.chase{position:absolute}
+
+    /* Image styling */
+    .spoiler img {
+      max-width: 100%;
+      height: auto;
+      border-radius: 8px;
+      margin-top: 10px;
+      display: block;
+    }
+
+    /* Polaroid effect */
+    .polaroid {
+      background: white;
+      padding: 15px 15px 30px;
+      border-radius: 2px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      transform: rotate(1deg);
+      display: inline-block;
+      margin: 10px;
+    }
+
+    /* Quiz corners */
+    .quiz-corner {
+      position: fixed;
+      width: 220px;
+      height: 240px;
+      background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,250,252,0.98));
+      border-radius: 20px;
+      padding: 15px;
+      box-shadow: 0 8px 25px rgba(78,30,60,0.15);
+      backdrop-filter: blur(10px);
+      border: 2px dashed rgba(255,92,138,0.3);
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 10;
+    }
+    .quiz-corner:hover {
+      transform: scale(1.05);
+      box-shadow: 0 12px 35px rgba(78,30,60,0.25);
+    }
+    .quiz-corner.top-left { top: 30px; left: 30px; }
+    .quiz-corner.top-right { top: 30px; right: 30px; }
+    .quiz-corner.bottom-left { bottom: 30px; left: 30px; }
+    .quiz-corner.bottom-right { bottom: 30px; right: 30px; }
+
+    .quiz-corner .question {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 12px;
+      color: #5b3f47;
+      line-height: 1.3;
+      text-align: center;
+    }
+    .quiz-corner .options {
+      display: grid;
+      gap: 5px;
+      grid-template-rows: repeat(4, 1fr);
+      height: 160px;
+    }
+    .quiz-corner .option {
+      padding: 6px 8px;
+      background: rgba(255,245,247,0.7);
+      border-radius: 8px;
+      font-size: 0.8rem;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      border: 1px solid transparent;
+      line-height: 1.2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      min-height: 35px;
+    }
+    .quiz-corner .option:hover {
+      background: rgba(255,92,138,0.1);
+      border-color: var(--accent);
+    }
+    .quiz-corner .option.correct {
+      background: linear-gradient(135deg, #a8e6cf, #88d498);
+      color: white;
+    }
+    .quiz-corner .option.incorrect {
+      background: linear-gradient(135deg, #ffaaa5, #ff8b94);
+      color: white;
+    }
+
+    .reward-message {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(255,255,255,0.95);
+      padding: 25px;
+      border-radius: 20px;
+      box-shadow: 0 15px 40px rgba(78,30,60,0.2);
+      text-align: center;
+      max-width: 400px;
+      z-index: 1000;
+      backdrop-filter: blur(15px);
+      border: 3px solid var(--accent);
+    }
+    .reward-message h3 {
+      color: var(--accent);
+      margin: 0 0 15px 0;
+      font-size: 1.3rem;
+    }
+    .reward-message p {
+      margin: 0 0 20px 0;
+      line-height: 1.5;
+    }
+    .reward-message button {
+      background: linear-gradient(90deg,#ff7aa3,#ff5480);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+
+    /* Новые функции */
+    .relationship-calendar {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 5px 20px rgba(255,92,138,0.1);
+      border: 2px dashed rgba(255,92,138,0.3);
+    }
+    
+    .calendar-date {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,200,220,0.5);
+    }
+    
+    .calendar-date:last-child {
+      border-bottom: none;
+    }
+    
+    .date-event {
+      font-weight: 600;
+      color: var(--accent);
+    }
+    
+    .date-days {
+      color: #888;
+      font-size: 0.9rem;
+    }
+
+    .compliment-generator {
+      text-align: center;
+      margin: 20px 0;
+    }
+    
+    .compliment-box {
+      background: linear-gradient(135deg, #fff0f5, #ffe6f2);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px 0;
+      border: 2px solid var(--accent);
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.1rem;
+      font-weight: 600;
+      color: #5b3f47;
+    }
+    
+    .generate-compliment {
+      background: linear-gradient(90deg,#ff7aa3,#ff5480);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .achievements-system {
+      margin: 20px 0;
+    }
+    
+    .achievement {
+      display: flex;
+      align-items: center;
+      padding: 10px;
+      margin: 8px 0;
+      background: rgba(255,255,255,0.8);
+      border-radius: 10px;
+      border-left: 4px solid var(--accent);
+    }
+    
+    .achievement.unlocked {
+      background: linear-gradient(135deg, #a8e6cf, #88d498);
+      color: white;
+    }
+    
+    .achievement-icon {
+      font-size: 1.5rem;
+      margin-right: 10px;
+    }
+    
+    .achievement-text {
+      flex: 1;
+    }
+
+    .planning-calendar {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px 0;
+    }
+    
+    .planning-form {
+      display: grid;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    
+    .planning-form input {
+      padding: 10px;
+      border: 2px solid rgba(255,200,220,0.5);
+      border-radius: 8px;
+      font-size: 1rem;
+    }
+    
+    .planning-form button {
+      background: var(--accent);
+      color: white;
+      border: none;
+      padding: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    
+    .plans-list {
+      max-height: 200px;
+      overflow-y: auto;
+    }
+    
+    .plan-item {
+      padding: 8px;
+      margin: 5px 0;
+      background: rgba(255,245,247,0.7);
+      border-radius: 8px;
+      border-left: 3px solid var(--accent);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Custom scrollbars */
+    .spoiler.open::-webkit-scrollbar,
+    .plans-list::-webkit-scrollbar {
+      width: 8px;
+    }
+    .spoiler.open::-webkit-scrollbar-track,
+    .plans-list::-webkit-scrollbar-track {
+      background: rgba(255, 220, 230, 0.3);
+      border-radius: 4px;
+    }
+    .spoiler.open::-webkit-scrollbar-thumb,
+    .plans-list::-webkit-scrollbar-thumb {
+      background: var(--accent);
+      border-radius: 4px;
+    }
+
+    @media (max-width:768px){
+      .quiz-corner {
+        width: 190px;
+        height: 210px;
+        padding: 12px;
+      }
+      .quiz-corner .options {
+        height: 140px;
+        gap: 4px;
+      }
+      .quiz-corner .option {
+        font-size: 0.75rem;
+        padding: 5px 6px;
+        min-height: 30px;
+      }
+    }
+
+    @media (max-width:520px){
+      body{padding:16px}
+      .header{gap:10px}
+      .logo{width:60px;height:60px}
+      .card{padding:18px}
+      .buttons{flex-direction:column;align-items:stretch}
+      .no{order:2;margin-top:10px}
+      .yes{order:1}
+      .spoiler.open{max-height:400px}
+      .quiz-corner {
+        width: 160px;
+        height: 180px;
+        padding: 10px;
+      }
+      .quiz-corner .options {
+        height: 120px;
+        gap: 3px;
+      }
+      .quiz-corner .option {
+        font-size: 0.7rem;
+        padding: 4px 5px;
+        min-height: 25px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Quiz Corners -->
+  <div class="quiz-corner top-left" data-question="0">
+    <div class="question">Первая поездка?</div>
+    <div class="options">
+      <div class="option" data-answer="0">Москва</div>
+      <div class="option" data-answer="1">Ижевск</div>
+      <div class="option" data-answer="2">Питер</div>
+      <div class="option" data-answer="3">Махачкала</div>
+    </div>
+  </div>
+
+  <div class="quiz-corner top-right" data-question="1">
+    <div class="question">Съехались?</div>
+    <div class="options">
+      <div class="option" data-answer="0">март</div>
+      <div class="option" data-answer="1">апрель</div>
+      <div class="option" data-answer="2">май</div>
+      <div class="option" data-answer="3">июнь</div>
+    </div>
+  </div>
+
+  <div class="quiz-corner bottom-left" data-question="2">
+    <div class="question">Город в Дагестане?</div>
+    <div class="options">
+      <div class="option" data-answer="0">Гамлет</div>
+      <div class="option" data-answer="1">Дербент</div>
+      <div class="option" data-answer="2">Гамсутль</div>
+      <div class="option" data-answer="3">Гергебиль</div>
+    </div>
+  </div>
+
+  <div class="quiz-corner bottom-right" data-question="3">
+    <div class="question">Первый букет?</div>
+    <div class="options">
+      <div class="option" data-answer="0">пионы+хризантемы</div>
+      <div class="option" data-answer="1">пионы+розы</div>
+      <div class="option" data-answer="2">розы+лилии</div>
+      <div class="option" data-answer="3">альстромерии+розы</div>
+    </div>
+  </div>
+
+  <div class="hearts" aria-hidden="true"></div>
+  <div class="card" role="main">
+    <div class="header">
+      <div class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" fill="#fff" opacity="0.12"/><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" stroke="#fff" stroke-width="0.6" fill="transparent"/></svg>
+      </div>
+      <div>
+        <h1>Моя любовь</h1>
+        <p class="lead">Выбирай правильный ответ, чтобы вспомнить нашу историю 😉</p>
+      </div>
+    </div>
+
+    <div class="question" aria-live="polite">
+      <p class="q-text">Ты меня любишь?</p>
+      <div class="buttons" style="position:relative">
+        <button class="yes" id="yesBtn">Да, очень ❤️</button>
+        <button class="no" id="noBtn" aria-label="Нет">Нет</button>
+      </div>
+
+      <!-- Новые секции -->
+      <div class="compliment-generator">
+        <div class="compliment-box" id="complimentText">
+          Нажми кнопку для комплимента! 💝
+        </div>
+        <button class="generate-compliment" id="generateCompliment">
+          Получить комплимент ✨
+        </button>
+      </div>
+
+      <div class="relationship-calendar">
+        <h3>📅 Наши важные даты</h3>
+        <div id="calendarDates">
+          <!-- Даты будут добавлены через JavaScript -->
+        </div>
+      </div>
+
+      <div class="achievements-system">
+        <h3>🏆 Наши достижения</h3>
+        <div id="achievementsList">
+          <!-- Достижения будут добавлены через JavaScript -->
+        </div>
+      </div>
+
+      <div class="planning-calendar">
+        <h3>📝 Планируем вместе</h3>
+        <div class="planning-form">
+          <input type="text" id="planTitle" placeholder="Что планируем?">
+          <input type="date" id="planDate">
+          <button id="addPlan">Добавить план</button>
+        </div>
+        <div class="plans-list" id="plansList">
+          <!-- Планы будут добавлены здесь -->
+        </div>
+      </div>
+
+      <!-- СПОЙЛЕРЫ С ФОТО -->
+      <div class="spoilers" id="spoilers">
+        <div class="spoiler" id="s1">
+          <h3>Наша первая встреча</h3>
+          <p>Помнишь наше первое свидание? Ты была такой застенчивой...</p>
+          <button class="continue">Продолжить</button>
+        </div>
+
+        <div class="spoiler" id="s2">
+          <h3>Память</h3>
+          <p>Это я смотрю на своё счастье</p>
+          <div class="polaroid">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
+          </div>
+          <p>Каждый раз, когда я смотрю на эту фотографию, я вспоминаю тот день. Ты была такой красивой в этом платье, и я не мог оторвать от тебя глаз.</p>
+          <button class="continue">Продолжить</button>
+        </div>
+
+        <div class="spoiler" id="s3">
+          <h3>Сюрприз</h3>
+          <p>Я положил сюда небольшую подсказку для следующего свидания: <strong>ура, мы пойдём в гончарную мастерскую, я наконец-то увижу твой талант своими глазами</strong> Будем лепить вместе, как в фильме Привидение ❤️</p>
+          <details>
+            <summary>А здесь мы счастливые в Дагестане</summary>
+            <div class="polaroid">
+              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
+            </div>
+          </details>
+          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
+          <button class="continue">Продолжить</button>
+        </div>
+      </div>
+    </div>
+
+    <footer>Пробовала ловить "Нет"? Эта тварь неуловима</footer>
+  </div>
+
+  <script>
+    // БАЗОВЫЙ ФУНКЦИОНАЛ
+    // create floating hearts
+    const heartsRoot = document.querySelector('.hearts');
+    function makeHeart(i){
+      const el = document.createElement('i');
+      const left = Math.random() * 100; const top = -10 - Math.random()*30;
+      el.style.left = left + 'vw'; el.style.top = top + 'vh';
+      const dur = 8 + Math.random()*12;
+      el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
+      heartsRoot.appendChild(el);
+      requestAnimationFrame(()=>{
+        el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
+        el.style.opacity = 0;
+      });
+      setTimeout(()=>el.remove(), (dur+0.5)*1000);
+    }
+    // spawn hearts occasionally
+    setInterval(()=>{ for(let i=0;i<3;i++) makeHeart(); }, 900);
+
+    // playful NO button
+    const noBtn = document.getElementById('noBtn');
+    const yesBtn = document.getElementById('yesBtn');
+
+    function moveNo(){
+      const rect = noBtn.getBoundingClientRect();
+      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+      const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+      const size = 120;
+      const x = Math.random() * (vw - size);
+      const y = Math.random() * (vh - size);
+      noBtn.style.position = 'absolute';
+      noBtn.style.left = x + 'px';
+      noBtn.style.top = y + 'px';
+      noBtn.classList.add('chase');
+    }
+
+    noBtn.addEventListener('mouseenter', moveNo);
+    noBtn.addEventListener('focus', moveNo);
+
+    // If clicked somehow, show a cheeky message
+    noBtn.addEventListener('click', (e)=>{
+      e.preventDefault();
+      alert('Ох, как же так — даже кнопка не устояла 😉');
+    });
+
+    // reveal spoilers sequentially when user clicks YES
+    const spoilers = Array.from(document.querySelectorAll('.spoiler'));
+    let revealed = 0;
+    function revealNext(){
+      if(revealed < spoilers.length){
+        spoilers[revealed].classList.add('open');
+        // scroll into view gently
+        spoilers[revealed].scrollIntoView({behavior:'smooth', block:'center'});
+        revealed++;
+      } else {
+        // final little celebration
+        const conf = document.createElement('div');
+        conf.style.position = 'fixed'; conf.style.inset='0'; conf.style.display='flex';conf.style.alignItems='center';conf.style.justifyContent='center';conf.style.zIndex=9999;
+        conf.innerHTML = `<div style="background:rgba(255,255,255,0.9);padding:28px;border-radius:18px;box-shadow:0 12px 30px rgba(130,40,70,0.12);text-align:center;max-width:90vw;">
+          <h2>Ура, ты всё открыла ✨</h2>
+          <p>Любимой девочке посвящается</p>
+          <button style='margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff8bb0,#ff5c8a);color:white;border:0;font-weight:700' onclick="this.parentElement.parentElement.remove()">Закрыть</button>
+        </div>`;
+        document.body.appendChild(conf);
+      }
+    }
+    yesBtn.addEventListener('click', revealNext);
+
+    // continue buttons inside spoilers also reveal next
+    document.querySelectorAll('.continue').forEach(b=>b.addEventListener('click',()=>revealNext()));
+
+    // ВИКТОРИНА
+    const quizData = [
+      {
+        correctAnswer: 1,
+        reward: "Ура, ты выиграла 1 любое желание! 💫"
+      },
+      {
+        correctAnswer: 0,
+        reward: "Ура, за правильный ответ я свожу тебя в любое место, о котором ты мечтала! 🌟"
+      },
+      {
+        correctAnswer: 2,
+        reward: "Ты хорошо всё запомнила и заслужила ужин в любом месте в ближайшие совместные выходные! 🍽️"
+      },
+      {
+        correctAnswer: 1,
+        reward: "Что ж, ты выиграла новый букетик. Кажется, я разорился за время этого теста :D 💐"
+      }
+    ];
+
+    // Quiz functionality
+    document.querySelectorAll('.quiz-corner .option').forEach(option => {
+      option.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const quizCorner = this.closest('.quiz-corner');
+        const questionIndex = parseInt(quizCorner.getAttribute('data-question'));
+        const answerIndex = parseInt(this.getAttribute('data-answer'));
+        const correctAnswer = quizData[questionIndex].correctAnswer;
+        const options = quizCorner.querySelectorAll('.option');
+        
+        // Disable all options in this corner
+        options.forEach(opt => {
+          opt.style.pointerEvents = 'none';
+        });
+        
+        // Show correct/incorrect
+        if (answerIndex === correctAnswer) {
+          this.classList.add('correct');
+          // Show reward message
+          setTimeout(() => {
+            showReward(quizData[questionIndex].reward);
+          }, 800);
+        } else {
+          this.classList.add('incorrect');
+          options[correctAnswer].classList.add('correct');
+        }
+      });
+    });
+
+    function showReward(message) {
+      const rewardDiv = document.createElement('div');
+      rewardDiv.className = 'reward-message';
+      rewardDiv.innerHTML = `
+        <h3>🎉 Правильно! 🎉</h3>
+        <p>${message}</p>
+        <button onclick="this.parentElement.remove()">Получить награду! 💝</button>
+      `;
+      document.body.appendChild(rewardDiv);
+    }
+
+    // НОВЫЕ ФУНКЦИИ
+    // Генератор комплиментов
+    const compliments = [
+      "Ты самое красивое, что случалось в моей жизни! 🌸",
+      "Твоя улыбка делает мой день ярче! ✨",
+      "Я скучаю по тебе каждую секунду! 💫",
+      "Ты вдохновляешь меня становиться лучше! 🚀",
+      "С тобой даже обычный день становится праздником! 🎉",
+      "Твои глаза - моя любимая вселенная! 🌌",
+      "Ты делаешь меня самым счастливым человеком! 😊",
+      "Каждая минута с тобой - подарок судьбы! 🎁",
+      "Твоя доброта согревает мое сердце! 🔥",
+      "Ты идеальна во всем! 💎",
+      "Мое сердце бьется только для тебя! 💓",
+      "Ты моя самая большая мечта! 🌠",
+      "С тобой я чувствую, что могу всё! 💪",
+      "Ты - причина моей улыбки! 😄",
+      "Любовь к тебе делает меня сильнее! 🛡️"
+    ];
+
+    document.getElementById('generateCompliment').addEventListener('click', function() {
+      const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+      document.getElementById('complimentText').textContent = randomCompliment;
+    });
+
+    // Календарь отношений
+    const importantDates = [
+      { date: '01.06.2023', event: 'Начали встречаться', days: 'Первый день' },
+      { date: '15.07.2023', event: 'Первое путешествие', days: '45 дней' },
+      { date: '01.09.2023', event: 'Съехались', days: '93 дня' },
+      { date: '14.02.2024', event: 'Первый День Влюбленных', days: '259 дней' },
+      { date: '01.06.2024', event: 'Год вместе!', days: '365 дней' },
+      { date: '15.08.2024', event: 'Отпуск в горах', days: '440 дней' },
+      { date: '31.12.2024', event: 'Первый Новый год', days: '579 дней' },
+      { date: '14.03.2025', event: 'Помолвка', days: '652 дня' },
+      { date: '01.06.2025', event: 'Две годовщины!', days: '730 дней' },
+      { date: '15.09.2025', event: 'Свадьба', days: '836 дней' }
+    ];
+
+    function renderCalendar() {
+      const calendarContainer = document.getElementById('calendarDates');
+      calendarContainer.innerHTML = '';
+      
+      importantDates.forEach(item => {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.innerHTML = `
+          <span class="date-event">${item.event}</span>
+          <span class="date-days">${item.date} (${item.days})</span>
+        `;
+        calendarContainer.appendChild(dateElement);
+      });
+    }
+
+    // Система достижений
+    const achievements = [
+      { days: 1, title: 'Первый день', desc: 'Начало нашей истории', icon: '🌱', unlocked: true },
+      { days: 50, title: '50 дней', desc: 'Первые полтора месяца', icon: '💝', unlocked: true },
+      { days: 100, title: '100 дней', desc: 'Сто дней счастья', icon: '🎯', unlocked: true },
+      { days: 365, title: 'Год любви', desc: 'Целый год вместе!', icon: '🎂', unlocked: false },
+      { days: 500, title: '500 дней', desc: 'Полтысячи дней', icon: '🌟', unlocked: false },
+      { days: 700, title: '700 дней', desc: 'Почти два года', icon: '💫', unlocked: false },
+      { days: 1000, title: '1000 дней', desc: 'Тысяча дней счастья', icon: '🏆', unlocked: false }
+    ];
+
+    function renderAchievements() {
+      const startDate = new Date('2023-06-01');
+      const today = new Date();
+      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      
+      const achievementsContainer = document.getElementById('achievementsList');
+      achievementsContainer.innerHTML = '';
+      
+      achievements.forEach(achievement => {
+        const isUnlocked = daysTogether >= achievement.days;
+        const achievementElement = document.createElement('div');
+        achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+        achievementElement.innerHTML = `
+          <div class="achievement-icon">${achievement.icon}</div>
+          <div class="achievement-text">
+            <div class="achievement-title">${achievement.title}</div>
+            <div class="achievement-desc">${achievement.desc}</div>
+          </div>
+          <div>${achievement.days} дней</div>
+        `;
+        achievementsContainer.appendChild(achievementElement);
+      });
+      
+      // Показываем текущий счетчик дней
+      const daysCounter = document.createElement('div');
+      daysCounter.style.cssText = 'text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);';
+      daysCounter.textContent = `Мы вместе уже ${daysTogether} дней! 💕`;
+      achievementsContainer.appendChild(daysCounter);
+    }
+
+    // Календарь планирования
+    let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
+
+    function renderPlans() {
+      const plansContainer = document.getElementById('plansList');
+      plansContainer.innerHTML = '';
+      
+      plans.forEach((plan, index) => {
+        const planElement = document.createElement('div');
+        planElement.className = 'plan-item';
+        planElement.innerHTML = `
+          <div>
+            <strong>${plan.title}</strong> - ${plan.date}
+          </div>
+          <button onclick="removePlan(${index})" style="background: #ff6b6b; color: white; border: none; border-radius: 5px; padding: 5px 10px; cursor: pointer;">×</button>
+        `;
+        plansContainer.appendChild(planElement);
+      });
+    }
+
+    function addPlan() {
+      const title = document.getElementById('planTitle').value;
+      const date = document.getElementById('planDate').value;
+      
+      if (title && date) {
+        plans.push({ title, date });
+        localStorage.setItem('ourPlans', JSON.stringify(plans));
+        renderPlans();
+        document.getElementById('planTitle').value = '';
+        document.getElementById('planDate').value = '';
+      }
+    }
+
+    function removePlan(index) {
+      plans.splice(index, 1);
+      localStorage.setItem('ourPlans', JSON.stringify(plans));
+      renderPlans();
+    }
+
+    document.getElementById('addPlan').addEventListener('click', addPlan);
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCalendar();
+      renderAchievements();
+      renderPlans();
+    });
+
+    // Initialize some hearts on load
+    for(let i=0;i<10;i++) makeHeart();
+  </script>
+</body>
+</html>
