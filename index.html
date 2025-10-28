@@ -58,7 +58,11 @@
     footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
 
     /* playful little cursor-chase for NO */
-    .no.chase{position:absolute}
+.no.chase {
+    position: fixed;
+    z-index: 1000;
+    margin: 0;
+}
 
     /* Image styling */
     .spoiler img {
@@ -360,11 +364,11 @@
       .spoiler.open{max-height:400px}
       .quiz-corner {
         width: 160px;
-        height: 180px;
+        height: 200px;
         padding: 10px;
       }
       .quiz-corner .options {
-        height: 120px;
+        height: 200px;
         gap: 3px;
       }
       .quiz-corner .option {
@@ -529,30 +533,36 @@
     setInterval(()=>{ for(let i=0;i<3;i++) makeHeart(); }, 900);
 
     // playful NO button
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
+const noBtn = document.getElementById('noBtn');
+const yesBtn = document.getElementById('yesBtn');
 
-    function moveNo(){
-      const rect = noBtn.getBoundingClientRect();
-      const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-      const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-      const size = 120;
-      const x = Math.random() * (vw - size);
-      const y = Math.random() * (vh - size);
-      noBtn.style.position = 'absolute';
-      noBtn.style.left = x + 'px';
-      noBtn.style.top = y + 'px';
-      noBtn.classList.add('chase');
-    }
+function moveNo(){
+    const rect = noBtn.getBoundingClientRect();
+    const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
+    const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+    const btnWidth = rect.width;
+    const btnHeight = rect.height;
+    
+    // Ограничиваем координаты, чтобы кнопка не выходила за экран
+    const maxX = vw - btnWidth - 10; // 10px отступ от края
+    const maxY = vh - btnHeight - 10;
+    
+    const x = Math.random() * maxX;
+    const y = Math.random() * maxY;
+    
+    noBtn.style.position = 'fixed';
+    noBtn.style.left = Math.max(10, x) + 'px'; // минимум 10px от левого края
+    noBtn.style.top = Math.max(10, y) + 'px'; // минимум 10px от верхнего края
+    noBtn.classList.add('chase');
+}
 
-    noBtn.addEventListener('mouseenter', moveNo);
-    noBtn.addEventListener('focus', moveNo);
+noBtn.addEventListener('mouseenter', moveNo);
+noBtn.addEventListener('focus', moveNo);
 
-    // If clicked somehow, show a cheeky message
-    noBtn.addEventListener('click', (e)=>{
-      e.preventDefault();
-      alert('Ох, как же так — даже кнопка не устояла 😉');
-    });
+noBtn.addEventListener('click', (e)=>{
+    e.preventDefault();
+    alert('Ох, как же так — даже кнопка не устояла 😉');
+});
 
     // reveal spoilers sequentially when user clicks YES
     const spoilers = Array.from(document.querySelectorAll('.spoiler'));
@@ -668,15 +678,18 @@
     // Календарь отношений
     const importantDates = [
       { date: '01.06.2023', event: 'Начали встречаться', days: 'Первый день' },
-      { date: '15.07.2023', event: 'Первое путешествие', days: '45 дней' },
-      { date: '01.09.2023', event: 'Съехались', days: '93 дня' },
-      { date: '14.02.2024', event: 'Первый День Влюбленных', days: '259 дней' },
-      { date: '01.06.2024', event: 'Год вместе!', days: '365 дней' },
-      { date: '15.08.2024', event: 'Отпуск в горах', days: '440 дней' },
-      { date: '31.12.2024', event: 'Первый Новый год', days: '579 дней' },
-      { date: '14.03.2025', event: 'Помолвка', days: '652 дня' },
-      { date: '01.06.2025', event: 'Две годовщины!', days: '730 дней' },
-      { date: '15.09.2025', event: 'Свадьба', days: '836 дней' }
+      { date: '04.06.2023', event: 'Посетили Иннополис и Свияжск', days: '4 дня' },
+      { date: '15.07.2023', event: 'Наша поездка в Ижевск', days: '45 дней' },
+      { date: '07.02.2024', event: 'Гуляли по зимней Москве', days: '251 день' },
+      { date: '24.03.2024', event: 'Ура, мы съехались', days: '297 дней' },
+      { date: '01.06.2024', event: 'Ура! Годик вместе!', days: '365 дней' },
+      { date: '02.09.2024', event: 'Отпуск в кавказских горах', days: '459 дней' },
+      { date: '23.09.2024', event: 'Переезд в другую квартиру', days: '480 дней' },
+      { date: '16.04.2025', event: 'Да, ещё один переезд', days: '685 дня' },
+      { date: '02.05.2025', event: 'У нас появилась маленькая Эми 🐈', days: '701 дней' },
+      { date: '25.05.2025', event: 'Утрау! Наша любовь ❤️', days: '724 дней' },
+      { date: '01.06.2025', event: 'Два года настоящей любви', days: '731 день' },
+      { date: '28.08.2025', event: 'Отпуск в Москве и Питере', days: '819 дней' }
     ];
 
     function renderCalendar() {
@@ -697,12 +710,12 @@
     // Система достижений
     const achievements = [
       { days: 1, title: 'Первый день', desc: 'Начало нашей истории', icon: '🌱', unlocked: true },
-      { days: 50, title: '50 дней', desc: 'Первые полтора месяца', icon: '💝', unlocked: true },
-      { days: 100, title: '100 дней', desc: 'Сто дней счастья', icon: '🎯', unlocked: true },
+      { days: 50, title: '50 дней', desc: 'Полтора месяца счастья', icon: '💝', unlocked: true },
+      { days: 100, title: '100 дней', desc: 'Сто дней любви', icon: '🎯', unlocked: true },
       { days: 365, title: 'Год любви', desc: 'Целый год вместе!', icon: '🎂', unlocked: false },
-      { days: 500, title: '500 дней', desc: 'Полтысячи дней', icon: '🌟', unlocked: false },
+      { days: 500, title: '500 дней', desc: 'Счастливые пятьсот дней', icon: '🌟', unlocked: false },
       { days: 700, title: '700 дней', desc: 'Почти два года', icon: '💫', unlocked: false },
-      { days: 1000, title: '1000 дней', desc: 'Тысяча дней счастья', icon: '🏆', unlocked: false }
+      { days: 1000, title: '1000 дней', desc: 'Делаем красиво?', icon: '🏆', unlocked: false }
     ];
 
     function renderAchievements() {
