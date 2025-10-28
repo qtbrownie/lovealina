@@ -19,8 +19,9 @@
     }
 
    /* floating hearts */
-    .hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
+    .hearts{position:fixed;inset:0;z-index:1}
     .hearts i{position:absolute;display:block;width:28px;height:28px;background:var(--accent);transform:rotate(45deg);border-radius:4px;opacity:0.9;cursor:pointer}    
+    .hearts i:before,.hearts i:after{content:'';position:absolute;width:28px;height:28px;background:var(--accent);border-radius:50%}
     .hearts i:before{top:-14px;left:0}
     .hearts i:after{left:-14px;top:0}
     @keyframes heartExplosion {
@@ -343,69 +344,6 @@
       background: var(--accent);
       border-radius: 4px;
     }
-
-   . i.heart-explode {
-    animation: explode 0.6s ease-out forwards;
-}
-
-@keyframes explode {
-    0% {
-        transform: scale(1);
-        opacity: 0.9;
-    }
-    50% {
-        transform: scale(1.8);
-        opacity: 0.4;
-    }
-    100% {
-        transform: scale(2.5);
-        opacity: 0;
-        display: none;
-    }
-}
-
-/* Альтернативный вариант взрыва с частицами */
-@keyframes explodeParticles {
-    0% {
-        transform: scale(1) rotate(45deg);
-        opacity: 0.9;
-    }
-    100% {
-        transform: scale(0) rotate(45deg);
-        opacity: 0;
-        box-shadow: 
-            -10px -10px 0 2px var(--accent),
-            10px -10px 0 2px var(--accent),
-            -10px 10px 0 2px var(--accent),
-            10px 10px 0 2px var(--accent);
-    }
-}
-
-.hearts i.heart-explode {
-    animation: heartExplode 0.8s ease-out forwards;
-    pointer-events: none;
-}
-
-@keyframes heartExplode {
-    0% {
-        transform: scale(1) rotate(45deg);
-        opacity: 0.9;
-        box-shadow: none;
-    }
-    50% {
-        transform: scale(1.5) rotate(45deg);
-        opacity: 0.6;
-    }
-    100% {
-        transform: scale(2.5) rotate(45deg);
-        opacity: 0;
-        box-shadow: 
-            -15px -15px 0 4px var(--accent),
-            15px -15px 0 4px var(--accent),
-            -15px 15px 0 4px var(--accent),
-            15px 15px 0 4px var(--accent);
-    }
-}
 
     @media (max-width:520px){
       body{padding:16px}
