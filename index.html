@@ -88,7 +88,7 @@
     .quiz-corner {
       position: fixed;
       width: 220px;
-      height: 320px;
+      height: 300px;
       background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(255,250,252,0.98));
       border-radius: 20px;
       padding: 15px;
@@ -382,29 +382,29 @@
 <body>
   <!-- Quiz Corners -->
   <div class="quiz-corner top-left" data-question="0">
-    <div class="question">Первая поездка?</div>
+    <div class="question">С каким вином я приехал к тебе на первую встречу</div>
     <div class="options">
-      <div class="option" data-answer="0">Москва</div>
-      <div class="option" data-answer="1">Ижевск</div>
-      <div class="option" data-answer="2">Питер</div>
-      <div class="option" data-answer="3">Махачкала</div>
+      <div class="option" data-answer="0">Грузинское</div>
+      <div class="option" data-answer="1">Молдавское</div>
+      <div class="option" data-answer="2">Российское</div>
+      <div class="option" data-answer="3">Французское</div>
     </div>
   </div>
 
   <div class="quiz-corner top-right" data-question="1">
-    <div class="question">Съехались?</div>
+    <div class="question">Название первой гостинницы в Москве?</div>
     <div class="options">
-      <div class="option" data-answer="0">март</div>
-      <div class="option" data-answer="1">апрель</div>
-      <div class="option" data-answer="2">май</div>
-      <div class="option" data-answer="3">июнь</div>
+      <div class="option" data-answer="0">Presnya Rooms</div>
+      <div class="option" data-answer="1">Скандинавия</div>
+      <div class="option" data-answer="2">Дом на Маяковке</div>
+      <div class="option" data-answer="3">Маяковский</div>
     </div>
   </div>
 
   <div class="quiz-corner bottom-left" data-question="2">
     <div class="question">Город в Дагестане?</div>
     <div class="options">
-      <div class="option" data-answer="0">Гамлет</div>
+      <div class="option" data-answer="0">Старый Гоор</div>
       <div class="option" data-answer="1">Дербент</div>
       <div class="option" data-answer="2">Гамсутль</div>
       <div class="option" data-answer="3">Гергебиль</div>
@@ -469,7 +469,7 @@
         <div class="planning-form">
           <input type="text" id="planTitle" placeholder="Что планируем?">
           <input type="date" id="planDate">
-          <button id="addPlan">Добавить план</button>
+          <button id="addPlan">Добавить событие</button>
         </div>
         <div class="plans-list" id="plansList">
           <!-- Планы будут добавлены здесь -->
@@ -490,24 +490,38 @@
           <div class="polaroid">
             <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
           </div>
-          <p>Каждый раз, когда я смотрю на эту фотографию, я вспоминаю тот день. Ты была такой красивой в этом платье, и я не мог оторвать от тебя глаз.</p>
+          <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
           <button class="continue">Продолжить</button>
         </div>
 
-        <div class="spoiler" id="s3">
-          <h3>Сюрприз</h3>
-          <p>Я положил сюда небольшую подсказку для следующего свидания: <strong>ура, мы пойдём в гончарную мастерскую, я наконец-то увижу твой талант своими глазами</strong> Будем лепить вместе, как в фильме Привидение ❤️</p>
-          <details>
-            <summary>А здесь мы счастливые в Дагестане</summary>
-            <div class="polaroid">
-              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
-            </div>
-          </details>
-          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
-          <button class="continue">Продолжить</button>
-        </div>
-      </div>
+        <div class="spoilers" id="spoilers">
+  <!-- Первый спойлер - про гончарную мастерскую -->
+  <div class="spoiler" id="s2">
+    <h3>Сюрприз</h3>
+    <p>Я положил сюда небольшую подсказку для следующего свидания: <strong> Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами</strong> Будем лепить вместе, как в фильме Привидение ❤️</p>
+    <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
+    <button class="continue">Продолжить</button>
+  </div>
+
+  <!-- Второй спойлер - про Дагестан (будет в конце) -->
+  <div class="spoiler" id="s3">
+    <h3>Память</h3>
+    <p>Это я смотрю на своё счастье</p>
+    <div class="polaroid">
+      <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
     </div>
+    <p>Каждый раз, когда я смотрю на эту фотографию, я вспоминаю тот день. Ты была такой красивой в этом платье, и я не мог оторвать от тебя глаз.</p>
+    
+    <details>
+      <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
+      <div class="polaroid">
+        <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
+      </div>
+    </details>
+    
+    <button class="continue">Продолжить</button>
+  </div>
+</div>
 
     <footer>Пробовала ловить "Нет"? Эта тварь неуловима</footer>
   </div>
@@ -578,8 +592,8 @@ noBtn.addEventListener('click', (e)=>{
         const conf = document.createElement('div');
         conf.style.position = 'fixed'; conf.style.inset='0'; conf.style.display='flex';conf.style.alignItems='center';conf.style.justifyContent='center';conf.style.zIndex=9999;
         conf.innerHTML = `<div style="background:rgba(255,255,255,0.9);padding:28px;border-radius:18px;box-shadow:0 12px 30px rgba(130,40,70,0.12);text-align:center;max-width:90vw;">
-          <h2>Ура, ты всё открыла ✨</h2>
-          <p>Любимой девочке посвящается</p>
+          <h2>Пока что ты всё открыла ✨</h2>
+          <p>Моей любимой девочке посвящается</p>
           <button style='margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff8bb0,#ff5c8a);color:white;border:0;font-weight:700' onclick="this.parentElement.parentElement.remove()">Закрыть</button>
         </div>`;
         document.body.appendChild(conf);
@@ -594,7 +608,7 @@ noBtn.addEventListener('click', (e)=>{
     const quizData = [
       {
         correctAnswer: 1,
-        reward: "Ура, ты выиграла 1 любое желание! 💫"
+        reward: "Конечно, это правильный ответ! Ты выиграла желание, которое я буду обязан исполнить 💫"
       },
       {
         correctAnswer: 0,
@@ -602,11 +616,11 @@ noBtn.addEventListener('click', (e)=>{
       },
       {
         correctAnswer: 2,
-        reward: "Ты хорошо всё запомнила и заслужила ужин в любом месте в ближайшие совместные выходные! 🍽️"
+        reward: "У тебя шикарная паммять, пожалуйт, ты заслужила ужин в любом месте на свой выбор! 🍽️"
       },
       {
         correctAnswer: 1,
-        reward: "Что ж, ты выиграла новый букетик. Кажется, я разорился за время этого теста :D 💐"
+        reward: "Что ж, ты выиграла новый букетик. Кажется, я разорился, потому что ты всё слишком хорошо помнишь :D 💐"
       }
     ];
 
