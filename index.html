@@ -18,10 +18,9 @@
       min-height:100vh;
     }
 
-    /* floating hearts */
+   /* floating hearts */
     .hearts{position:fixed;inset:0;pointer-events:none;z-index:1}
-    .hearts i{position:absolute;display:block;width:28px;height:28px;background:var(--accent);transform:rotate(45deg);border-radius:4px;opacity:0.9;cursor:pointer}
-    .hearts i:before,.hearts i:after{content:'';position:absolute;width:28px;height:28px;background:var(--accent);border-radius:50%}
+    .hearts i{position:absolute;display:block;width:28px;height:28px;background:var(--accent);transform:rotate(45deg);border-radius:4px;opacity:0.9;cursor:pointer}    
     .hearts i:before{top:-14px;left:0}
     .hearts i:after{left:-14px;top:0}
     @keyframes heartExplosion {
@@ -345,7 +344,7 @@
       border-radius: 4px;
     }
 
-   .hearts i.heart-explode {
+   . i.heart-explode {
     animation: explode 0.6s ease-out forwards;
 }
 
@@ -383,25 +382,30 @@
 }
 
 .hearts i.heart-explode {
-    animation: explodeParticles 0.8s ease-out forwards;
+    animation: heartExplode 0.8s ease-out forwards;
+    pointer-events: none;
 }
-    
-    @media (max-width:768px){
-      .quiz-corner {
-        width: 190px;
-        height: 210px;
-        padding: 12px;
-      }
-      .quiz-corner .options {
-        height: 140px;
-        gap: 4px;
-      }
-      .quiz-corner .option {
-        font-size: 0.75rem;
-        padding: 5px 6px;
-        min-height: 30px;
-      }
+
+@keyframes heartExplode {
+    0% {
+        transform: scale(1) rotate(45deg);
+        opacity: 0.9;
+        box-shadow: none;
     }
+    50% {
+        transform: scale(1.5) rotate(45deg);
+        opacity: 0.6;
+    }
+    100% {
+        transform: scale(2.5) rotate(45deg);
+        opacity: 0;
+        box-shadow: 
+            -15px -15px 0 4px var(--accent),
+            15px -15px 0 4px var(--accent),
+            -15px 15px 0 4px var(--accent),
+            15px 15px 0 4px var(--accent);
+    }
+}
 
     @media (max-width:520px){
       body{padding:16px}
