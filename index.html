@@ -345,6 +345,47 @@
       border-radius: 4px;
     }
 
+   .hearts i.heart-explode {
+    animation: explode 0.6s ease-out forwards;
+}
+
+@keyframes explode {
+    0% {
+        transform: scale(1);
+        opacity: 0.9;
+    }
+    50% {
+        transform: scale(1.8);
+        opacity: 0.4;
+    }
+    100% {
+        transform: scale(2.5);
+        opacity: 0;
+        display: none;
+    }
+}
+
+/* Альтернативный вариант взрыва с частицами */
+@keyframes explodeParticles {
+    0% {
+        transform: scale(1) rotate(45deg);
+        opacity: 0.9;
+    }
+    100% {
+        transform: scale(0) rotate(45deg);
+        opacity: 0;
+        box-shadow: 
+            -10px -10px 0 2px var(--accent),
+            10px -10px 0 2px var(--accent),
+            -10px 10px 0 2px var(--accent),
+            10px 10px 0 2px var(--accent);
+    }
+}
+
+.hearts i.heart-explode {
+    animation: explodeParticles 0.8s ease-out forwards;
+}
+    
     @media (max-width:768px){
       .quiz-corner {
         width: 190px;
@@ -538,13 +579,51 @@
       el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
       heartsRoot.appendChild(el);
         el.addEventListener('click', function() {
-        this.classList.add('heart-explode');
-        setTimeout(() => {
-            if (this.parentElement) {
-                this.parentElement.removeChild(this);
-            }
-        }, 600);
-    });
+    this.style.pointerEvents = 'none';
+    this.classList.add('heart-explode');
+    
+    // Создаем маленькие частицы при клике
+    createParticles(this.getBoundingClientRect());
+    
+    setTimeout(() => {
+        if (this.parentElement) {
+            this.parentElement.removeChild(this);
+        }
+    }, 800);
+});
+
+// Функция для создания частиц при взрыве
+function createParticles(rect) {
+    const particleCount = 8;
+    for (let i = 0; i < particleCount; i++) {
+        const particle = document.createElement('div');
+        particle.style.cssText = `
+            position: fixed;
+            width: 6px;
+            height: 6px;
+            background: var(--accent);
+            border-radius: 50%;
+            left: ${rect.left + rect.width/2}px;
+            top: ${rect.top + rect.height/2}px;
+            pointer-events: none;
+            z-index: 1000;
+        `;
+        
+        const angle = (i / particleCount) * Math.PI * 2;
+        const distance = 30 + Math.random() * 40;
+        const duration = 0.8 + Math.random() * 0.4;
+        
+        particle.style.transition = `all ${duration}s ease-out`;
+        document.body.appendChild(particle);
+        
+        requestAnimationFrame(() => {
+            particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+            particle.style.opacity = '0';
+        });
+        
+        setTimeout(() => particle.remove(), duration * 1000);
+    }
+}
       requestAnimationFrame(()=>{
         el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
         el.style.opacity = 0;
