@@ -549,7 +549,7 @@
       const el = document.createElement('i');
       const left = Math.random() * 100; const top = -10 - Math.random()*30;
       el.style.left = left + 'vw'; el.style.top = top + 'vh';
-      const dur = 8 + Math.random()*12;
+      const dur = 10 + Math.random()*15;
       el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
       heartsRoot.appendChild(el);
       
@@ -572,7 +572,7 @@
     }
     
     // spawn hearts occasionally
-    setInterval(()=>{ for(let i=0;i<6;i++) makeHeart(); }, 700);
+    setInterval(()=>{ for(let i=0;i<4;i++) makeHeart(); }, 800);
 
     // playful NO button
     const noBtn = document.getElementById('noBtn');
