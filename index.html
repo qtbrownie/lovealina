@@ -528,6 +528,14 @@
       const dur = 8 + Math.random()*12;
       el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
       heartsRoot.appendChild(el);
+        el.addEventListener('click', function() {
+        this.classList.add('heart-explode');
+        setTimeout(() => {
+            if (this.parentElement) {
+                this.parentElement.removeChild(this);
+            }
+        }, 600);
+    });
       requestAnimationFrame(()=>{
         el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
         el.style.opacity = 0;
@@ -535,7 +543,7 @@
       setTimeout(()=>el.remove(), (dur+0.5)*1000);
     }
     // spawn hearts occasionally
-    setInterval(()=>{ for(let i=0;i<3;i++) makeHeart(); }, 900);
+    setInterval(()=>{ for(let i=0;i<6;i++) makeHeart(); }, 700);
 
     // playful NO button
 const noBtn = document.getElementById('noBtn');
@@ -602,12 +610,12 @@ noBtn.addEventListener('click', (e)=>{
         reward: "Конечно, это правильный ответ! Ты выиграла желание, которое я буду обязан исполнить 💫"
       },
       {
-        correctAnswer: 0,
+        correctAnswer: 2,
         reward: "Ура, за правильный ответ я свожу тебя в любое место, о котором ты мечтала! 🌟"
       },
       {
         correctAnswer: 2,
-        reward: "У тебя шикарная паммять, пожалуйт, ты заслужила ужин в любом месте на свой выбор! 🍽️"
+        reward: "У тебя шикарная память, пожалуй, ты заслужила ужин в любом месте на свой выбор! 🍽️"
       },
       {
         correctAnswer: 1,
