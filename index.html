@@ -834,13 +834,6 @@ setTimeout(() => {
   daysCounter.textContent = `Мы вместе уже ${daysTogether} дней! 💕`;
   achievementsContainer.appendChild(daysCounter);
 }
-  
-  // Показываем текущий счетчик дней
-  const daysCounter = document.createElement('div');
-  daysCounter.style.cssText = 'text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);';
-  daysCounter.textContent = `Мы вместе уже ${daysTogether} дней! 💕`;
-  achievementsContainer.appendChild(daysCounter);
-}
 
     // Календарь планирования
     let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
