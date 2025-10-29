@@ -776,7 +776,7 @@ setTimeout(() => {
       { date: '02.05.2025', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
       { date: '25.05.2025', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
       { date: '01.06.2025', event: '✨ 730 ночей взаимной любви', days: '731 день' },
-      { date: '11.08.2025', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '731 день' },
+      { date: '11.08.2025', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
       { date: '28.08.2025', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
     ];
 
@@ -821,13 +821,19 @@ setTimeout(() => {
     achievementElement.innerHTML = `
       <div class="achievement-icon">${achievement.icon}</div>
       <div class="achievement-text">
-        <div class="achievement-title">${achievement.days} дней</div>
         <div class="achievement-desc">${achievement.desc}</div>
       </div>
       <div>${achievement.days} дней</div>
     `;
     achievementsContainer.appendChild(achievementElement);
   });
+  
+  // Показываем текущий счетчик дней
+  const daysCounter = document.createElement('div');
+  daysCounter.style.cssText = 'text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);';
+  daysCounter.textContent = `Мы вместе уже ${daysTogether} дней! 💕`;
+  achievementsContainer.appendChild(daysCounter);
+}
   
   // Показываем текущий счетчик дней
   const daysCounter = document.createElement('div');
