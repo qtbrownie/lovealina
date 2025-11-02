@@ -4,6 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>lovealina</title>
+   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a;--text:#3b2a33}
     .night-mode{--bg1:#0a0a2a;--bg2:#0a0a2a;--card:#1e1e3a;--accent:#ffd700;--text:#e6e6ff}
@@ -604,8 +606,23 @@
   </div>
 
   <script>
-    let heartExplosionCount = 0;
-    let starExplosionCount = 0;
+   // Конфигурация Firebase
+  const firebaseConfig = {
+    apiKey: "AIzaSyAH3npLbbeBsqv7KA0t9AvZ5lCw3M3jIYU",
+    authDomain: "lovealina-planner.firebaseapp.com",
+    databaseURL: "https://lovealina-planner-default-rtdb.europe-west1.firebasedatabase.app",
+    projectId: "lovealina-planner",
+    storageBucket: "lovealina-planner.firebasestorage.app",
+    messagingSenderId: "135195507622",
+    appId: "1:135195507622:web:f66dfd17afecda97456d67"
+  };
+
+  // Инициализация Firebase
+  firebase.initializeApp(firebaseConfig);
+  const database = firebase.database();
+
+  let heartExplosionCount = 0;
+  let starExplosionCount = 0;
     const heartCountElement = document.getElementById('heartCount');
     const starCountElement = document.getElementById('starCount');
     let isNightMode = false;
