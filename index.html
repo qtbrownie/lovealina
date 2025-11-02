@@ -59,7 +59,10 @@
     .no{background:#fff;border:2px solid var(--accent);min-width:84px;transition:transform 0.35s ease, left 0.35s ease, top 0.35s ease;}
 
     /* reveal spoilers */
-    .spoilers{margin-top:18px;display:grid;gap:12px}
+    .spoilers-container {
+      margin-top: 18px;
+    }
+    .spoilers{display:grid;gap:12px}
     .spoiler{background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(200,150,170,0.12);overflow:hidden;max-height:0;opacity:0;transition:max-height 450ms ease,opacity 350ms ease,padding 350ms}
     .spoiler.open{max-height:600px;opacity:1;padding:14px;overflow-y:auto}
     .spoiler h3{margin:0 0 6px}
@@ -299,6 +302,44 @@
         <button class="no" id="noBtn" aria-label="Нет">Нет</button>
       </div>
 
+      <!-- Контейнер для спойлеров - теперь они будут появляться здесь -->
+      <div class="spoilers-container">
+        <div class="spoilers" id="spoilers">
+          <div class="spoiler" id="s1">
+            <h3>Наша первая встреча</h3>
+            <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
+            <button class="continue">Продолжить</button>
+          </div>
+
+          <div class="spoiler" id="s2">
+            <h3>Память</h3>
+            <p>Это я смотрю на своё счастье</p>
+            <div class="polaroid">
+              <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
+            </div>
+            <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
+            <button class="continue">Продолжить</button>
+          </div>
+
+          <div class="spoiler" id="s3">
+            <h3>Сюрприз</h3>
+            <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
+            <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
+            <button class="continue">Продолжить</button>
+          </div>
+
+          <div class="spoiler" id="s4">
+            <details>
+              <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
+              <div class="polaroid">
+                <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
+              </div>
+            </details>
+            <button class="continue">Продолжить</button>
+          </div>
+        </div>
+      </div>
+
       <!-- Новые секции -->
       <div class="compliment-generator">
         <div class="compliment-box" id="complimentText">
@@ -334,42 +375,7 @@
           <!-- Планы будут добавлены здесь -->
         </div>
       </div>
-
-      <!-- СПОЙЛЕРЫ С ФОТО -->
-      <div class="spoilers" id="spoilers">
-        <div class="spoiler" id="s1">
-          <h3>Наша первая встреча</h3>
-          <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s2">
-          <h3>Память</h3>
-          <p>Это я смотрю на своё счастье</p>
-          <div class="polaroid">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
-          </div>
-          <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s3">
-          <h3>Сюрприз</h3>
-          <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
-          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s4">
-          <details>
-            <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
-            <div class="polaroid">
-              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
-            </div>
-          </details>
-          <button class="continue">Продолжить</button>
-        </div>
-      </div>
+    </div>
 
     <footer>Пробовала ловить "Нет"? Эта тварь неуловима</footer>
   </div>
@@ -489,8 +495,8 @@ setTimeout(() => {
     function revealNext(){
       if(revealed < spoilers.length){
         spoilers[revealed].classList.add('open');
-        // scroll into view gently
-        spoilers[revealed].scrollIntoView({behavior:'smooth', block:'center'});
+        // Плавная прокрутка к открытому спойлеру
+        spoilers[revealed].scrollIntoView({behavior:'smooth', block:'nearest'});
         revealed++;
       } else {
         // final little celebration
