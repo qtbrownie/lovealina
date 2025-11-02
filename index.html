@@ -924,23 +924,24 @@
     ];
 
     function getDaysText(days) {
-      const lastDigit = days % 10;
-      const lastTwoDigits = days % 100;
-      
-      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-        return 'дней';
-      }
-      
-      if (lastDigit === 1) {
-        return 'день';
-      }
-      
-      if (lastDigit >= 2 && lastDigit <= 4) {
-        return 'дня';
-      }
-      
-      return 'дней';
-    }
+  if (days < 0) return '❌ Просрочено';
+  if (days === 0) return '🎯 Сегодня!';
+  if (days === 1) return '📅 Завтра';
+  
+  const lastDigit = days % 10;
+  const lastTwoDigits = days % 100;
+  
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return `⏳ Через ${days} дней`;
+  }
+  if (lastDigit === 1) {
+    return `⏳ Через ${days} день`;
+  }
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `⏳ Через ${days} дня`;
+  }
+  return `⏳ Через ${days} дней`;
+}
 
     function renderAchievements() {
       const startDate = new Date('2023-06-01');
@@ -979,18 +980,45 @@
     return;
   }
   
-  plans.forEach((plan, index) => {
+  // СОРТИРОВКА: от ближайшей даты к самой поздней
+  const sortedPlans = [...plans].sort((a, b) => {
+    const dateA = new Date(a.date + (a.time ? 'T' + a.time : ''));
+    const dateB = new Date(b.date + (b.time ? 'T' + b.time : ''));
+    return dateA - dateB; // от старых к новым
+  });
+  
+  console.log('Отсортированные планы:', sortedPlans);
+  
+  sortedPlans.forEach((plan, index) => {
+    const originalIndex = plans.indexOf(plan);
     const planElement = document.createElement('div');
     planElement.className = 'plan-item';
+    
+    // Добавляем иконку срочности для ближайших событий
+    const today = new Date();
+    const planDate = new Date(plan.date + (plan.time ? 'T' + plan.time : ''));
+    const daysDiff = Math.ceil((planDate - today) / (1000 * 60 * 60 * 24));
+    
+    let urgencyIcon = '';
+    if (daysDiff === 0) {
+      urgencyIcon = '🚨 '; // сегодня
+    } else if (daysDiff === 1) {
+      urgencyIcon = '⚠️ '; // завтра
+    } else if (daysDiff <= 7) {
+      urgencyIcon = '📌 '; // в течение недели
+    }
+    
     const displayTime = plan.time ? ` в ${plan.time}` : '';
     const formattedDate = formatDate(plan.date);
+    
     planElement.innerHTML = `
       <div>
-        <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
+        <strong>${urgencyIcon}${plan.title}</strong> - ${formattedDate}${displayTime}
+        ${daysDiff >= 0 ? `<div style="font-size: 0.8rem; color: #666; margin-top: 2px;">${getDaysText(daysDiff)}</div>` : ''}
       </div>
       <div class="plan-actions">
-        <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
-        <button class="delete-btn" onclick="removePlan(${index})">×</button>
+        <button class="edit-btn" onclick="editPlan(${originalIndex})">✏️</button>
+        <button class="delete-btn" onclick="removePlan(${originalIndex})">×</button>
       </div>
     `;
     plansContainer.appendChild(planElement);
