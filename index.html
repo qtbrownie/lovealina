@@ -3,123 +3,130 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>lovealina</title>
-   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <title>Наша история любви | lovealina</title>
+  <meta name="description" content="Страница нашей истории любви с важными датами, достижениями и планированием" />
+  
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+  
   <style>
-    :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a;--text:#3b2a33}
-    .night-mode{--bg1:#0a0a2a;--bg2:#0a0a2a;--card:#1e1e3a;--accent:#ffd700;--text:#e6e6ff}
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;
+    :root {
+      --bg1: #ffedf0;
+      --bg2: #ffe6f2;
+      --card: #fff;
+      --accent: #ff5c8a;
+      --text: #3b2a33;
+      --shadow: rgba(78,30,60,0.12);
+    }
+    
+    .night-mode {
+      --bg1: #0a0a2a;
+      --bg2: #0a0a2a;
+      --card: #1e1e3a;
+      --accent: #ffd700;
+      --text: #e6e6ff;
+      --shadow: rgba(255,215,0,0.2);
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    html, body {
+      height: 100%;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
       background: var(--bg1);
-      display:flex;align-items:flex-start;justify-content:center;padding:32px;color:var(--text);
-      overflow-y:auto;
-      min-height:100vh;
+      color: var(--text);
       transition: all 0.5s ease;
-    }
-
-   /* floating hearts - только в дневном режиме */
-    .hearts{position:fixed;inset:0;z-index:1}
-    .hearts i{
-      position:absolute;
-      display:block;
-      width:28px;
-      height:28px;
-      background:var(--accent);
-      transform:rotate(45deg);
-      border-radius:4px;
-      opacity:0.9;
-      cursor:pointer;
-    }    
-    .hearts i:before,.hearts i:after{
-      content:'';
-      position:absolute;
-      width:28px;
-      height:28px;
-      background:var(--accent);
-      border-radius:50%;
-    }
-    .hearts i:before{top:-14px;left:0}
-    .hearts i:after{left:-14px;top:0}
-    
-    @keyframes heartExplosion {
-      0% { transform: scale(1) rotate(45deg); opacity: 1; }
-      50% { transform: scale(1.5) rotate(45deg); opacity: 0.7; }
-      100% { transform: scale(2) rotate(45deg); opacity: 0; }
-    }
-    .heart-explode {
-      animation: heartExplosion 0.6s ease-out forwards;
-      pointer-events: none;
-    }
-
-    /* floating stars - только в ночном режиме */
-    .stars{position:fixed;inset:0;z-index:1;display:none}
-    .night-mode .stars{display:block}
-    .stars i{
-      position:absolute;
-      display:block;
-      width:36px;
-      height:36px;
-      background:#ffd700;
-      clip-path: polygon(
-        50% 0%,
-        61% 35%,
-        98% 35%,
-        68% 57%,
-        79% 91%,
-        50% 70%,
-        21% 91%,
-        32% 57%,
-        2% 35%,
-        39% 35%
-      );
-      opacity:0.9;
-      cursor:pointer;
-      filter: drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 12px #ffd700);
-      transition:all 0.3s ease;
     }
     
-    @keyframes starExplosion {
-      0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(1.5); opacity: 0.7; }
-      100% { transform: scale(2); opacity: 0; }
+    body {
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 32px;
+      overflow-y: auto;
+      min-height: 100vh;
     }
-    .star-explode {
-      animation: starExplosion 0.6s ease-out forwards;
+    
+    /* Canvas для анимации частиц */
+    #particlesCanvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
       pointer-events: none;
     }
-
-    .card{
-      width:min(760px,96vw);
-      background:linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,250,252,0.9));
-      border-radius:20px;padding:28px;box-shadow:0 10px 30px rgba(78,30,60,0.12);
-      position:relative;z-index:2;backdrop-filter: blur(6px);
-      margin:20px 0;
+    
+    /* Основная карточка */
+    .card {
+      width: min(760px, 96vw);
+      background: linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,250,252,0.9));
+      border-radius: 20px;
+      padding: 28px;
+      box-shadow: 0 10px 30px var(--shadow);
+      position: relative;
+      z-index: 2;
+      backdrop-filter: blur(6px);
+      margin: 20px 0;
       transition: all 0.5s ease;
     }
-    .night-mode .card{
-      background:linear-gradient(180deg, rgba(30,30,58,0.9), rgba(26,26,52,0.9));
-      box-shadow:0 10px 30px rgba(255,215,0,0.2);
+    
+    .night-mode .card {
+      background: linear-gradient(180deg, rgba(30,30,58,0.9), rgba(26,26,52,0.9));
     }
-    .header{display:flex;gap:16px;align-items:center}
-    .logo{
-      width:76px;height:76px;border-radius:18px;background:conic-gradient(from 200deg at 50% 50%, #ffd3e6, #ff9cc0 30%, #ff6b95 60%);
-      display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(255,110,150,0.15);
+    
+    /* Шапка */
+    .header {
+      display: flex;
+      gap: 16px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .logo {
+      width: 76px;
+      height: 76px;
+      border-radius: 18px;
+      background: conic-gradient(from 200deg at 50% 50%, #ffd3e6, #ff9cc0 30%, #ff6b95 60%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 6px 18px rgba(255,110,150,0.15);
       transition: all 0.5s ease;
     }
-    .night-mode .logo{
-      background:conic-gradient(from 200deg at 50% 50%, #ffd700, #ffed4e 30%, #ffdb58 60%);
-      box-shadow:0 6px 18px rgba(255,215,0,0.3);
+    
+    .night-mode .logo {
+      background: conic-gradient(from 200deg at 50% 50%, #ffd700, #ffed4e 30%, #ffdb58 60%);
+      box-shadow: 0 6px 18px rgba(255,215,0,0.3);
     }
-    .logo svg{width:48px;height:48px;filter:drop-shadow(0 6px 10px rgba(255,110,150,0.12))}
-    .night-mode .logo svg{filter:drop-shadow(0 6px 10px rgba(255,215,0,0.3))}
-    h1{font-size:1.6rem;margin:0}
-    p.lead{margin:8px 0 0;color:var(--text)}
-
-    /* Отдельные секции */
+    
+    .logo svg {
+      width: 48px;
+      height: 48px;
+      filter: drop-shadow(0 6px 10px rgba(255,110,150,0.12));
+    }
+    
+    .night-mode .logo svg {
+      filter: drop-shadow(0 6px 10px rgba(255,215,0,0.3));
+    }
+    
+    h1 {
+      font-size: 1.6rem;
+      margin: 0;
+    }
+    
+    p.lead {
+      margin: 8px 0 0;
+      color: var(--text);
+    }
+    
+    /* Секции */
     .section {
       background: rgba(255,255,255,0.95);
       border-radius: 15px;
@@ -129,20 +136,106 @@
       border: 2px dashed rgba(255,92,138,0.3);
       transition: all 0.5s ease;
     }
+    
     .night-mode .section {
       background: rgba(30,30,58,0.95);
       box-shadow: 0 5px 20px rgba(255,215,0,0.2);
       border: 2px dashed rgba(255,215,0,0.4);
     }
-
-    footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
-    .night-mode footer{color:#a8a8ff}
-
-    /* Комплименты */
+    
+    /* Кнопка переключения темы */
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 12px;
+      border-radius: 50%;
+      box-shadow: 0 4px 15px rgba(255,92,138,0.3);
+      z-index: 1000;
+      font-weight: 600;
+      color: var(--accent);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--accent);
+      cursor: pointer;
+      transition: all 0.5s ease;
+    }
+    
+    .night-mode .theme-toggle {
+      background: rgba(30,30,58,0.9);
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+    }
+    
+    /* Счетчики */
+    .counter {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(255,255,255,0.9);
+      padding: 10px 20px;
+      border-radius: 25px;
+      box-shadow: 0 4px 15px rgba(255,92,138,0.3);
+      z-index: 1000;
+      font-weight: 600;
+      color: var(--accent);
+      backdrop-filter: blur(10px);
+      border: 2px solid var(--accent);
+      transition: all 0.5s ease;
+    }
+    
+    .night-mode .counter {
+      background: rgba(30,30,58,0.9);
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
+      color: #ffd700;
+      border-color: #ffd700;
+    }
+    
+    .counter span {
+      display: inline-block;
+      transition: transform 0.3s ease;
+      font-weight: 700;
+    }
+    
+    /* Счетчик дней */
+    .days-counter-section {
+      text-align: center;
+      padding: 30px 20px;
+    }
+    
+    .days-counter {
+      font-size: 3.5rem;
+      font-weight: 800;
+      background: linear-gradient(135deg, #ff6b95, #ff8eb4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin: 10px 0;
+      animation: pulse 2s ease-in-out infinite;
+    }
+    
+    .night-mode .days-counter {
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    
+    .days-text {
+      font-size: 1.2rem;
+      color: var(--text);
+      font-weight: 600;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.05); }
+    }
+    
+    /* Генератор комплиментов */
     .compliment-generator {
       text-align: center;
     }
-
+    
     .compliment-box {
       background: linear-gradient(135deg, #fff0f5, #ffe6f2);
       border-radius: 15px;
@@ -158,13 +251,14 @@
       color: #5b3f47;
       transition: all 0.5s ease;
     }
+    
     .night-mode .compliment-box {
       background: linear-gradient(135deg, #1a1a3a, #2a2a4a);
       color: #e6e6ff;
     }
-
+    
     .generate-compliment {
-      background: linear-gradient(90deg,#ff7aa3,#ff5480);
+      background: linear-gradient(90deg, #ff7aa3, #ff5480);
       color: white;
       border: none;
       padding: 10px 20px;
@@ -175,24 +269,17 @@
       margin-bottom: 5px;
       transition: all 0.5s ease;
     }
+    
     .night-mode .generate-compliment {
-      background: linear-gradient(90deg,#ffd700,#ffed4e);
+      background: linear-gradient(90deg, #ffd700, #ffed4e);
       color: #0a0a2a;
     }
-
-    /* Важные даты */
-    .dates-section {
-      position: relative;
-    }
     
+    /* Важные даты */
     .dates-section h3 {
       margin: 0 0 15px 0;
       text-align: center;
       color: var(--accent);
-    }
-    
-    .calendar-dates-container {
-      margin-top: 0;
     }
     
     .calendar-date {
@@ -204,6 +291,7 @@
       margin: 0;
       transition: all 0.5s ease;
     }
+    
     .night-mode .calendar-date {
       border-bottom: 1px solid rgba(255,215,0,0.3);
     }
@@ -228,15 +316,12 @@
       min-width: 120px;
       transition: all 0.5s ease;
     }
+    
     .night-mode .date-days {
       color: #a8a8ff;
     }
-
-    /* Достижения */
-    .achievements-system {
-      margin: 0;
-    }
     
+    /* Достижения */
     .achievements-system h3 {
       margin: 0 0 15px 0;
       text-align: center;
@@ -253,6 +338,7 @@
       border-left: 4px solid var(--accent);
       transition: all 0.5s ease;
     }
+    
     .night-mode .achievement {
       background: rgba(30,30,58,0.8);
     }
@@ -270,12 +356,8 @@
     .achievement-text {
       flex: 1;
     }
-
-    /* Планировщик */
-    .planning-calendar {
-      margin: 0;
-    }
     
+    /* Планировщик */
     .planning-calendar h3 {
       margin: 0 0 15px 0;
       text-align: center;
@@ -296,6 +378,7 @@
       background: white;
       transition: all 0.5s ease;
     }
+    
     .night-mode .planning-form input {
       background: #2a2a4a;
       border: 2px solid rgba(255,215,0,0.3);
@@ -310,6 +393,7 @@
       border-radius: 8px;
       cursor: pointer;
     }
+    
     .night-mode .planning-form button {
       color: #0a0a2a;
     }
@@ -330,15 +414,16 @@
       align-items: center;
       transition: all 0.5s ease;
     }
+    
     .night-mode .plan-item {
       background: rgba(42,42,74,0.7);
     }
-
+    
     .plan-actions {
       display: flex;
       gap: 8px;
     }
-
+    
     .edit-btn {
       background: linear-gradient(135deg, #a8e6cf, #88d498);
       color: white;
@@ -353,9 +438,9 @@
       align-items: center;
       justify-content: center;
     }
-
+    
     .delete-btn {
-      background: linear-gradient(90deg,#ff7aa3,#ff5480);
+      background: linear-gradient(90deg, #ff7aa3, #ff5480);
       color: white;
       border: none;
       border-radius: 8px;
@@ -368,158 +453,92 @@
       align-items: center;
       justify-content: center;
     }
+    
     .night-mode .delete-btn {
-      background: linear-gradient(90deg,#ffd700,#ffed4e);
+      background: linear-gradient(90deg, #ffd700, #ffed4e);
       color: #0a0a2a;
     }
-
-    /* Счетчик дней */
-    .days-counter-section {
+    
+    footer {
+      margin-top: 18px;
+      color: #774;
+      opacity: 0.9;
+      font-size: 0.9rem;
       text-align: center;
-      padding: 30px 20px;
     }
     
-    .days-counter {
-      font-size: 3.5rem;
-      font-weight: 800;
-      background: linear-gradient(135deg, #ff6b95, #ff8eb4);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      margin: 10px 0;
-      animation: pulse 2s ease-in-out infinite;
-    }
-    .night-mode .days-counter {
-      background: linear-gradient(135deg, #ffd700, #ffed4e);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
+    .night-mode footer {
+      color: #a8a8ff;
     }
     
-    .days-text {
-      font-size: 1.2rem;
-      color: var(--text);
-      font-weight: 600;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.05); }
-    }
-
-    /* Кнопка переключения режима */
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      left: 20px;
-      background: rgba(255,255,255,0.9);
-      padding: 12px;
-      border-radius: 50%;
-      box-shadow: 0 4px 15px rgba(255,92,138,0.3);
-      z-index: 1000;
-      font-weight: 600;
-      color: var(--accent);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--accent);
-      cursor: pointer;
-      transition: all 0.5s ease;
-    }
-    .night-mode .theme-toggle {
-      background: rgba(30,30,58,0.9);
-      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
-    }
-
-    /* Счетчики */
-    .heart-counter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.9);
-      padding: 10px 20px;
-      border-radius: 25px;
-      box-shadow: 0 4px 15px rgba(255,92,138,0.3);
-      z-index: 1000;
-      font-weight: 600;
-      color: var(--accent);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--accent);
-      transition: all 0.5s ease;
-    }
-    .night-mode .heart-counter {
-      display: none;
-    }
-
-    .star-counter {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: rgba(30,30,58,0.9);
-      padding: 10px 20px;
-      border-radius: 25px;
-      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
-      z-index: 1000;
-      font-weight: 600;
-      color: #ffd700;
-      backdrop-filter: blur(10px);
-      border: 2px solid #ffd700;
-      transition: all 0.5s ease;
-      display: none;
-    }
-    .night-mode .star-counter {
-      display: block;
-    }
-
-    #heartCount, #starCount {
-      display: inline-block;
-      transition: transform 0.3s ease;
-      font-weight: 700;
-    }
-
-    /* Custom scrollbars */
+    /* Кастомные скроллбары */
     .plans-list::-webkit-scrollbar {
       width: 8px;
     }
+    
     .plans-list::-webkit-scrollbar-track {
       background: rgba(255, 220, 230, 0.3);
       border-radius: 4px;
     }
+    
     .plans-list::-webkit-scrollbar-thumb {
       background: var(--accent);
       border-radius: 4px;
     }
+    
     .night-mode .plans-list::-webkit-scrollbar-track {
       background: rgba(255,215,0,0.2);
     }
-
-    @media (max-width:520px){
-      body{padding:16px}
-      .header{gap:10px}
-      .logo{width:60px;height:60px}
-      .card{padding:18px}
+    
+    /* Адаптивность */
+    @media (max-width: 520px) {
+      body {
+        padding: 16px;
+      }
+      
+      .header {
+        gap: 10px;
+      }
+      
+      .logo {
+        width: 60px;
+        height: 60px;
+      }
+      
+      .card {
+        padding: 18px;
+      }
+      
       .planning-form {
         grid-template-columns: 1fr;
       }
+      
       .calendar-date {
         flex-direction: column;
         align-items: flex-start;
         gap: 5px;
       }
+      
       .date-event {
         margin-right: 0;
       }
+      
       .date-days {
         text-align: left;
         min-width: auto;
       }
+      
       .days-counter {
         font-size: 2.5rem;
       }
+      
       .theme-toggle {
         top: 10px;
         left: 10px;
         padding: 10px;
       }
-      .heart-counter, .star-counter {
+      
+      .counter {
         top: 10px;
         right: 10px;
         padding: 8px 16px;
@@ -528,662 +547,640 @@
   </style>
 </head>
 <body>
-  <div class="hearts" aria-hidden="true"></div>
-  <div class="stars" aria-hidden="true"></div>
-  <div class="theme-toggle" id="themeToggle">🌙</div>
-  <div class="heart-counter">
-    💖 <span id="heartCount">0</span>
+  <canvas id="particlesCanvas"></canvas>
+  
+  <button class="theme-toggle" id="themeToggle" aria-label="Переключить тему">🌙</button>
+  
+  <div class="counter" id="particleCounter">
+    <span id="particleCount">0</span>
   </div>
-  <div class="star-counter">
-    ⭐ <span id="starCount">0</span>
-  </div>
-  <div class="card" role="main">
-    <div class="header">
+  
+  <main class="card">
+    <header class="header">
       <div class="logo" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" fill="#fff" opacity="0.12"/><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" stroke="#fff" stroke-width="0.6" fill="transparent"/></svg>
+        <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" fill="#fff" opacity="0.12"/>
+          <path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" stroke="#fff" stroke-width="0.6" fill="transparent"/>
+        </svg>
       </div>
       <div>
         <h1>Моё солнце!</h1>
         <p class="lead">Это страничка нашей истории любви</p>
       </div>
-    </div>
+    </header>
 
     <!-- Счетчик дней вместе -->
-    <div class="section days-counter-section">
-      <h3>📅 Мы вместе уже</h3>
+    <section class="section days-counter-section" aria-labelledby="daysCounterTitle">
+      <h3 id="daysCounterTitle">📅 Мы вместе уже</h3>
       <div class="days-counter" id="daysCounter">0</div>
       <div class="days-text" id="daysText">дней счастья!</div>
-    </div>
+    </section>
 
-    <!-- Секция 1: Генератор комплиментов -->
-    <div class="section">
+    <!-- Генератор комплиментов -->
+    <section class="section" aria-labelledby="complimentsTitle">
       <div class="compliment-generator">
-        <h3>💝 Генератор комплиментов</h3>
+        <h3 id="complimentsTitle">💝 Генератор комплиментов</h3>
         <button class="generate-compliment" id="generateCompliment">
           Получить комплимент ✨
         </button>
-        <div class="compliment-box" id="complimentText">
+        <div class="compliment-box" id="complimentText" aria-live="polite">
           Здесь таится моя любовь 💝
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Секция 2: Важные даты -->
-    <div class="section dates-section">
-      <h3>📅 Наши важные даты</h3>
+    <!-- Важные даты -->
+    <section class="section dates-section" aria-labelledby="importantDatesTitle">
+      <h3 id="importantDatesTitle">📅 Наши важные даты</h3>
       <div class="calendar-dates-container" id="calendarDates">
         <!-- Даты будут добавлены через JavaScript -->
       </div>
-    </div>
+    </section>
 
-    <!-- Секция 3: Достижения -->
-    <div class="section">
+    <!-- Достижения -->
+    <section class="section" aria-labelledby="achievementsTitle">
       <div class="achievements-system">
-        <h3>🏆 Наши достижения</h3>
+        <h3 id="achievementsTitle">🏆 Наши достижения</h3>
         <div id="achievementsList">
           <!-- Достижения будут добавлены через JavaScript -->
         </div>
       </div>
-    </div>
+    </section>
 
-    <!-- Секция 4: Планировщик -->
-    <div class="section">
+    <!-- Планировщик -->
+    <section class="section" aria-labelledby="plannerTitle">
       <div class="planning-calendar">
-        <h3>📝 Планируем вместе</h3>
+        <h3 id="plannerTitle">📝 Планируем вместе</h3>
         <div class="planning-form">
-          <input type="text" id="planTitle" placeholder="Что планируем?">
-          <input type="date" id="planDate">
-          <input type="time" id="planTime">
+          <input type="text" id="planTitle" placeholder="Что планируем?" aria-label="Название события">
+          <input type="date" id="planDate" aria-label="Дата события">
+          <input type="time" id="planTime" aria-label="Время события">
           <button id="addPlan">Добавить событие</button>
         </div>
-        <div class="plans-list" id="plansList">
+        <div class="plans-list" id="plansList" aria-live="polite">
           <!-- Планы будут добавлены здесь -->
         </div>
       </div>
-    </div>
+    </section>
 
     <footer>С любовью для тебя ❤️</footer>
-  </div>
+  </main>
 
   <script>
-   // Конфигурация Firebase
-  const firebaseConfig = {
-    apiKey: "AIzaSyAH3npLbbeBsqv7KA0t9AvZ5lCw3M3jIYU",
-    authDomain: "lovealina-planner.firebaseapp.com",
-    databaseURL: "https://lovealina-planner-default-rtdb.europe-west1.firebasedatabase.app",
-    projectId: "lovealina-planner",
-    storageBucket: "lovealina-planner.firebasestorage.app",
-    messagingSenderId: "135195507622",
-    appId: "1:135195507622:web:f66dfd17afecda97456d67"
-  };
+    // Конфигурация Firebase (в реальном проекте используйте переменные окружения)
+    const firebaseConfig = {
+      apiKey: "AIzaSyAH3npLbbeBsqv7KA0t9AvZ5lCw3M3jIYU",
+      authDomain: "lovealina-planner.firebaseapp.com",
+      databaseURL: "https://lovealina-planner-default-rtdb.europe-west1.firebasedatabase.app",
+      projectId: "lovealina-planner",
+      storageBucket: "lovealina-planner.firebasestorage.app",
+      messagingSenderId: "135195507622",
+      appId: "1:135195507622:web:f66dfd17afecda97456d67"
+    };
 
-  // Инициализация Firebase
-firebase.initializeApp(firebaseConfig);
-const database = firebase.database();
+    // Инициализация Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 
-let heartExplosionCount = 0;
-let starExplosionCount = 0;
-const heartCountElement = document.getElementById('heartCount');
-const starCountElement = document.getElementById('starCount');
-let isNightMode = false;
+    // Переменные состояния
+    let particleCount = 0;
+    let isNightMode = false;
+    let canvas, ctx;
+    let particles = [];
+    let animationId;
 
-// Загрузка счетчиков из localStorage
-heartExplosionCount = parseInt(localStorage.getItem('heartExplosionCount')) || 0;
-starExplosionCount = parseInt(localStorage.getItem('starExplosionCount')) || 0;
+    // Загрузка счетчика из localStorage
+    particleCount = parseInt(localStorage.getItem('particleCount')) || 0;
+    document.getElementById('particleCount').textContent = particleCount;
 
-// Обновляем отображение счетчиков
-heartCountElement.textContent = heartExplosionCount;
-starCountElement.textContent = starExplosionCount;
-
-    // Функция для создания частиц при взрыве сердца
-  function createHeartParticles(rect) {
-    const particleCount = 8;
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.style.cssText = `
-        position: fixed;
-        width: 6px;
-        height: 6px;
-        background: var(--accent);
-        border-radius: 50%;
-        left: ${rect.left + rect.width/2}px;
-        top: ${rect.top + rect.height/2}px;
-        pointer-events: none;
-        z-index: 1000;
-      `;
+    // Инициализация Canvas
+    function initCanvas() {
+      canvas = document.getElementById('particlesCanvas');
+      ctx = canvas.getContext('2d');
       
-      const angle = (i / particleCount) * Math.PI * 2;
-      const distance = 30 + Math.random() * 40;
-      const duration = 0.8 + Math.random() * 0.4;
+      function resizeCanvas() {
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+      }
       
-      particle.style.transition = `all ${duration}s ease-out`;
-      document.body.appendChild(particle);
+      resizeCanvas();
+      window.addEventListener('resize', resizeCanvas);
+    }
+
+    // Класс для частиц
+    class Particle {
+      constructor(x, y, type) {
+        this.x = x;
+        this.y = y;
+        this.type = type; // 'heart' или 'star'
+        this.size = 20 + Math.random() * 10;
+        this.speedX = (Math.random() - 0.5) * 4;
+        this.speedY = (Math.random() - 0.5) * 4;
+        this.alpha = 1;
+        this.decay = 0.02 + Math.random() * 0.02;
+        this.rotation = Math.random() * Math.PI * 2;
+        this.rotationSpeed = (Math.random() - 0.5) * 0.1;
+      }
       
-      requestAnimationFrame(() => {
-        particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
-        particle.style.opacity = '0';
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        this.alpha -= this.decay;
+        this.rotation += this.rotationSpeed;
+        return this.alpha > 0;
+      }
+      
+      draw() {
+        ctx.save();
+        ctx.globalAlpha = this.alpha;
+        ctx.translate(this.x, this.y);
+        ctx.rotate(this.rotation);
+        
+        if (this.type === 'heart') {
+          // Рисуем сердечко
+          ctx.fillStyle = isNightMode ? '#ffd700' : '#ff5c8a';
+          ctx.beginPath();
+          ctx.moveTo(0, 0 - this.size/2);
+          ctx.bezierCurveTo(
+            0, 0 - this.size/2 - this.size/4,
+            this.size/2, 0 - this.size/2 - this.size/4,
+            this.size/2, 0 - this.size/4
+          );
+          ctx.bezierCurveTo(
+            this.size/2, 0,
+            0, 0,
+            0, this.size/2
+          );
+          ctx.bezierCurveTo(
+            0, 0,
+            -this.size/2, 0,
+            -this.size/2, 0 - this.size/4
+          );
+          ctx.bezierCurveTo(
+            -this.size/2, 0 - this.size/2 - this.size/4,
+            0, 0 - this.size/2 - this.size/4,
+            0, 0 - this.size/2
+          );
+          ctx.fill();
+        } else {
+          // Рисуем звезду
+          ctx.fillStyle = '#ffd700';
+          ctx.shadowColor = '#ffd700';
+          ctx.shadowBlur = 10;
+          
+          const spikes = 5;
+          const outerRadius = this.size / 2;
+          const innerRadius = outerRadius / 2;
+          
+          ctx.beginPath();
+          for (let i = 0; i < spikes * 2; i++) {
+            const radius = i % 2 === 0 ? outerRadius : innerRadius;
+            const angle = (Math.PI * i) / spikes;
+            const x = radius * Math.cos(angle);
+            const y = radius * Math.sin(angle);
+            
+            if (i === 0) {
+              ctx.moveTo(x, y);
+            } else {
+              ctx.lineTo(x, y);
+            }
+          }
+          ctx.closePath();
+          ctx.fill();
+          ctx.shadowBlur = 0;
+        }
+        
+        ctx.restore();
+      }
+    }
+
+    // Анимация частиц
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      
+      // Обновляем и рисуем частицы
+      particles = particles.filter(particle => {
+        const stillAlive = particle.update();
+        if (stillAlive) {
+          particle.draw();
+        }
+        return stillAlive;
       });
       
-      setTimeout(() => particle.remove(), duration * 1000);
+      animationId = requestAnimationFrame(animateParticles);
     }
-  }
 
-  // Функция для создания частиц при взрыве звезды
-  function createStarParticles(rect) {
-    const particleCount = 12;
-    for (let i = 0; i < particleCount; i++) {
-      const particle = document.createElement('div');
-      particle.style.cssText = `
-        position: fixed;
-        width: 6px;
-        height: 6px;
-        background: #ffd700;
-        border-radius: 50%;
-        left: ${rect.left + rect.width/2}px;
-        top: ${rect.top + rect.height/2}px;
-        pointer-events: none;
-        z-index: 1000;
-        box-shadow: 0 0 8px #ffd700;
-      `;
+    // Создание частиц при клике
+    function createParticles(x, y, type, count = 8) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new Particle(x, y, type));
+      }
       
-      const angle = (i / particleCount) * Math.PI * 2;
-      const distance = 40 + Math.random() * 60;
-      const duration = 0.8 + Math.random() * 0.4;
+      // Обновляем счетчик
+      particleCount++;
+      const counterElement = document.getElementById('particleCount');
+      counterElement.textContent = particleCount;
+      localStorage.setItem('particleCount', particleCount);
       
-      particle.style.transition = `all ${duration}s ease-out`;
-      document.body.appendChild(particle);
-      
-      requestAnimationFrame(() => {
-        particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
-        particle.style.opacity = '0';
+      // Анимация счетчика
+      counterElement.style.transform = 'scale(1.3)';
+      setTimeout(() => {
+        counterElement.style.transform = 'scale(1)';
+      }, 300);
+    }
+
+    // Обработчик кликов по canvas
+    function setupCanvasClickHandler() {
+      canvas.addEventListener('click', (e) => {
+        const rect = canvas.getBoundingClientRect();
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        createParticles(x, y, isNightMode ? 'star' : 'heart');
       });
       
-      setTimeout(() => particle.remove(), duration * 1000);
+      // Автоматическое создание частиц
+      setInterval(() => {
+        if (particles.length < 50) { // Ограничиваем количество частиц
+          const x = Math.random() * canvas.width;
+          const y = Math.random() * canvas.height;
+          createParticles(x, y, isNightMode ? 'star' : 'heart', 1);
+        }
+      }, 1000);
     }
-  }
 
-  // Создание сердечек (только в дневном режиме)
-  const heartsRoot = document.querySelector('.hearts');
-  function makeHeart(i){
-    const el = document.createElement('i');
-    const left = Math.random() * 100; 
-    const top = -10 - Math.random()*30;
-    
-    el.style.left = left + 'vw'; 
-    el.style.top = top + 'vh';
-    
-    const dur = 10 + Math.random()*15;
-    el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
-    heartsRoot.appendChild(el);
-    
-    el.addEventListener('click', function() {
-  this.style.pointerEvents = 'none';
-  this.classList.add('heart-explode');
-  
-  // Увеличиваем счетчик сердечек
-  heartExplosionCount++;
-  heartCountElement.textContent = heartExplosionCount;
-  
-  // Сохраняем в localStorage
-  localStorage.setItem('heartExplosionCount', heartExplosionCount);
-  
-  // Добавляем анимацию к счетчику
-  heartCountElement.style.transform = 'scale(1.3)';
-  setTimeout(() => {
-    heartCountElement.style.transform = 'scale(1)';
-  }, 300);
-  
-  createHeartParticles(this.getBoundingClientRect());
-  setTimeout(() => {
-    if (this.parentElement) {
-      this.parentElement.removeChild(this);
-    }
-  }, 800);
-});
-    
-    requestAnimationFrame(()=>{
-      el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
-      el.style.opacity = 0;
+    // Переключение ночного режима
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      isNightMode = !isNightMode;
+      document.body.classList.toggle('night-mode', isNightMode);
+      this.textContent = isNightMode ? '☀️' : '🌙';
+      this.setAttribute('aria-label', isNightMode ? 'Включить дневной режим' : 'Включить ночной режим');
     });
-    setTimeout(()=>el.remove(), (dur+0.5)*1000);
-  }
 
-  // Создание звезд (только в ночном режиме)
-  const starsRoot = document.querySelector('.stars');
-  function makeStar(i){
-    const el = document.createElement('i');
-    const left = Math.random() * 100; 
-    const top = -10 - Math.random()*30;
+    // Остальной код (счетчик дней, генератор комплиментов, календарь и т.д.)
+    // ... (остальной код остается таким же, как в оригинале)
     
-    el.style.left = left + 'vw'; 
-    el.style.top = top + 'vh';
-    
-    const dur = 15 + Math.random()*20;
-    el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
-    starsRoot.appendChild(el);
-    
-    el.addEventListener('click', function() {
-  this.style.pointerEvents = 'none';
-  this.classList.add('star-explode');
-  
-  // Увеличиваем счетчик звезд
-  starExplosionCount++;
-  starCountElement.textContent = starExplosionCount;
-  
-  // Сохраняем в localStorage
-  localStorage.setItem('starExplosionCount', starExplosionCount);
-  
-  // Добавляем анимацию к счетчику
-  starCountElement.style.transform = 'scale(1.3)';
-  setTimeout(() => {
-    starCountElement.style.transform = 'scale(1)';
-  }, 300);
-  
-  createStarParticles(this.getBoundingClientRect());
-  setTimeout(() => {
-    if (this.parentElement) {
-      this.parentElement.removeChild(this);
-    }
-  }, 800);
-});
-    
-    requestAnimationFrame(()=>{
-      el.style.transform = `translateY(${120 + Math.random()*40}vh) rotate(${(Math.random()-0.5)*180}deg)`;
-      el.style.opacity = 0;
-    });
-    setTimeout(()=>el.remove(), (dur+0.5)*1000);
-  }
-  
-  // Создание сердечек в дневном режиме
-  function startHearts() {
-    setInterval(()=>{ 
-      if (!isNightMode) {
-        for(let i=0;i<3;i++) makeHeart(); 
+    // Счетчик дней вместе
+    function updateDaysCounter() {
+      const startDate = new Date('2023-06-01');
+      const today = new Date();
+      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      
+      const daysCounter = document.getElementById('daysCounter');
+      const daysText = document.getElementById('daysText');
+      
+      daysCounter.textContent = daysTogether;
+      
+      const lastDigit = daysTogether % 10;
+      const lastTwoDigits = daysTogether % 100;
+      
+      let dayText = 'дней';
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        dayText = 'дней';
+      } else if (lastDigit === 1) {
+        dayText = 'день';
+      } else if (lastDigit >= 2 && lastDigit <= 4) {
+        dayText = 'дня';
       }
-    }, 800);
-  }
-
-  // Создание звезд в ночном режиме
-  function startStars() {
-    setInterval(()=>{ 
-      if (isNightMode) {
-        for(let i=0;i<2;i++) makeStar(); 
+      
+      daysText.textContent = `${dayText} счастья!`;
+      
+      if (daysTogether % 100 === 0) {
+        daysText.textContent += ` 🎉 Юбилей!`;
+      } else if (daysTogether % 365 === 0) {
+        const years = daysTogether / 365;
+        daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
       }
-    }, 1000);
-  }
-
-  // Переключение ночного режима
-  document.getElementById('themeToggle').addEventListener('click', function() {
-    isNightMode = !isNightMode;
-    document.body.classList.toggle('night-mode', isNightMode);
-    this.textContent = isNightMode ? '☀️' : '🌙';
-    
-    if (isNightMode) {
-      heartsRoot.innerHTML = '';
-      for(let i=0;i<15;i++) makeStar();
-    } else {
-      starsRoot.innerHTML = '';
-      for(let i=0;i<10;i++) makeHeart();
+      
+      renderAchievements();
     }
-  });
 
-  // Счетчик дней вместе
-  function updateDaysCounter() {
-    const startDate = new Date('2023-06-01');
-    const today = new Date();
-    const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    
-    const daysCounter = document.getElementById('daysCounter');
-    const daysText = document.getElementById('daysText');
-    
-    daysCounter.textContent = daysTogether;
-    
-    const lastDigit = daysTogether % 10;
-    const lastTwoDigits = daysTogether % 100;
-    
-    let dayText = 'дней';
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-      dayText = 'дней';
-    } else if (lastDigit === 1) {
-      dayText = 'день';
-    } else if (lastDigit >= 2 && lastDigit <= 4) {
-      dayText = 'дня';
-    }
-    
-    daysText.textContent = `${dayText} счастья!`;
-    
-    if (daysTogether % 100 === 0) {
-      daysText.textContent += ` 🎉 Юбилей!`;
-    } else if (daysTogether % 365 === 0) {
-      const years = daysTogether / 365;
-      daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
-    }
-    
-    renderAchievements();
-  }
+    // Генератор комплиментов
+    const compliments = [
+      "Ты самое красивое, что случалось в моей жизни! 🌸",
+      "Твоя улыбка делает мой день ярче! ✨",
+      "Я скучаю по тебе каждую секунду! 💫",
+      "Ты вдохновляешь меня становиться лучше! 🚀",
+      "С тобой даже обычный день становится праздником! 🎉",
+      "Твои глаза - моя любимая вселенная! 🌌",
+      "Ты делаешь меня самым счастливым человеком! 😊",
+      "Каждая минута с тобой - подарок судьбы! 🎁",
+      "Твоя доброта согревает мое сердце! 🔥",
+      "Ты идеальна во всем! 💎",
+      "Мое сердце бьется только для тебя! 💓",
+      "Ты моя самая большая мечта! 🌠",
+      "С тобой я чувствую, что могу всё! 💪",
+      "Ты - причина моей улыбки! 😄",
+      "Любовь к тебе делает меня сильнее! 🛡️"
+    ];
 
-  // Генератор комплиментов
-  const compliments = [
-    "Ты самое красивое, что случалось в моей жизни! 🌸",
-    "Твоя улыбка делает мой день ярче! ✨",
-    "Я скучаю по тебе каждую секунду! 💫",
-    "Ты вдохновляешь меня становиться лучше! 🚀",
-    "С тобой даже обычный день становится праздником! 🎉",
-    "Твои глаза - моя любимая вселенная! 🌌",
-    "Ты делаешь меня самым счастливым человеком! 😊",
-    "Каждая минута с тобой - подарок судьбы! 🎁",
-    "Твоя доброта согревает мое сердце! 🔥",
-    "Ты идеальна во всем! 💎",
-    "Мое сердце бьется только для тебя! 💓",
-    "Ты моя самая большая мечта! 🌠",
-    "С тобой я чувствую, что могу всё! 💪",
-    "Ты - причина моей улыбки! 😄",
-    "Любовь к тебе делает меня сильнее! 🛡️"
-  ];
-
-  document.getElementById('generateCompliment').addEventListener('click', function() {
-    const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
-    document.getElementById('complimentText').textContent = randomCompliment;
-  });
-
-  // Функция для форматирования даты в дд.мм.гггг
-  function formatDate(dateString) {
-    const [year, month, day] = dateString.split('-');
-    return `${day}.${month}.${year}`;
-  }
-
-  // Календарь событий
-  const importantDates = [
-    { date: '2023-06-01', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
-    { date: '2023-06-04', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
-    { date: '2023-07-15', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
-    { date: '2024-01-22', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
-    { date: '2024-02-07', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
-    { date: '2024-03-24', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
-    { date: '2024-06-01', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
-    { date: '2024-09-02', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
-    { date: '2024-09-23', event: '📦 Первый совместный переезд', days: '480 дней' },
-    { date: '2025-04-16', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
-    { date: '2025-05-02', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
-    { date: '2025-05-25', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
-    { date: '2025-06-01', event: '✨ 730 ночей взаимной любви', days: '731 день' },
-    { date: '2025-08-11', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
-    { date: '2025-08-28', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
-  ];
-
-  function renderCalendar() {
-    const calendarContainer = document.getElementById('calendarDates');
-    calendarContainer.innerHTML = '';
-    
-    importantDates.forEach(item => {
-      const dateElement = document.createElement('div');
-      dateElement.className = 'calendar-date';
-      dateElement.innerHTML = `
-        <span class="date-event">${item.event}</span>
-        <span class="date-days">${formatDate(item.date)} (${item.days})</span>
-      `;
-      calendarContainer.appendChild(dateElement);
+    document.getElementById('generateCompliment').addEventListener('click', function() {
+      const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+      document.getElementById('complimentText').textContent = randomCompliment;
     });
-  }
 
-  // Система достижений
-  const achievements = [
-    { days: 1, desc: 'Старт великого приключения!', icon: '🌱', unlocked: true },
-    { days: 7, desc: 'Первая неделя вместе!', icon: '🌼', unlocked: true },
-    { days: 30, desc: 'Первый месяц любви', icon: '💝', unlocked: true },
-    { days: 100, desc: 'Сотня дней счастья!', icon: '🎯', unlocked: true },
-    { days: 182, desc: 'Полгода вместе!', icon: '🌟', unlocked: true },
-    { days: 365, desc: 'Целый год любви!', icon: '🎉', unlocked: true },
-    { days: 500, desc: '500 дней нежности', icon: '💫', unlocked: false },
-    { days: 730, desc: 'Два года вместе!', icon: '🏆', unlocked: false },
-    { days: 1000, desc: 'Тысяча дней счастья', icon: '💖', unlocked: false }
-  ];
+    // Функция для форматирования даты в дд.мм.гггг
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}.${month}.${year}`;
+    }
 
-  // Функция для планов (с эмодзи)
-  function getDaysText(days) {
-    if (days < 0) return '❌ Просрочено';
-    if (days === 0) return '🎯 Сегодня!';
-    if (days === 1) return '📅 Завтра';
-    
-    const lastDigit = days % 10;
-    const lastTwoDigits = days % 100;
-    
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    // Календарь событий
+    const importantDates = [
+      { date: '2023-06-01', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
+      { date: '2023-06-04', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
+      { date: '2023-07-15', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
+      { date: '2024-01-22', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
+      { date: '2024-02-07', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
+      { date: '2024-03-24', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
+      { date: '2024-06-01', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
+      { date: '2024-09-02', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
+      { date: '2024-09-23', event: '📦 Первый совместный переезд', days: '480 дней' },
+      { date: '2025-04-16', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
+      { date: '2025-05-02', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
+      { date: '2025-05-25', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
+      { date: '2025-06-01', event: '✨ 730 ночей взаимной любви', days: '731 день' },
+      { date: '2025-08-11', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
+      { date: '2025-08-28', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
+    ];
+
+    function renderCalendar() {
+      const calendarContainer = document.getElementById('calendarDates');
+      calendarContainer.innerHTML = '';
+      
+      importantDates.forEach(item => {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.innerHTML = `
+          <span class="date-event">${item.event}</span>
+          <span class="date-days">${formatDate(item.date)} (${item.days})</span>
+        `;
+        calendarContainer.appendChild(dateElement);
+      });
+    }
+
+    // Система достижений
+    const achievements = [
+      { days: 1, desc: 'Старт великого приключения!', icon: '🌱', unlocked: true },
+      { days: 7, desc: 'Первая неделя вместе!', icon: '🌼', unlocked: true },
+      { days: 30, desc: 'Первый месяц любви', icon: '💝', unlocked: true },
+      { days: 100, desc: 'Сотня дней счастья!', icon: '🎯', unlocked: true },
+      { days: 182, desc: 'Полгода вместе!', icon: '🌟', unlocked: true },
+      { days: 365, desc: 'Целый год любви!', icon: '🎉', unlocked: true },
+      { days: 500, desc: '500 дней нежности', icon: '💫', unlocked: false },
+      { days: 730, desc: 'Два года вместе!', icon: '🏆', unlocked: false },
+      { days: 1000, desc: 'Тысяча дней счастья', icon: '💖', unlocked: false }
+    ];
+
+    // Функция для планов (с эмодзи)
+    function getDaysText(days) {
+      if (days < 0) return '❌ Просрочено';
+      if (days === 0) return '🎯 Сегодня!';
+      if (days === 1) return '📅 Завтра';
+      
+      const lastDigit = days % 10;
+      const lastTwoDigits = days % 100;
+      
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        return `⏳ Через ${days} дней`;
+      }
+      if (lastDigit === 1) {
+        return `⏳ Через ${days} день`;
+      }
+      if (lastDigit >= 2 && lastDigit <= 4) {
+        return `⏳ Через ${days} дня`;
+      }
       return `⏳ Через ${days} дней`;
     }
-    if (lastDigit === 1) {
-      return `⏳ Через ${days} день`;
-    }
-    if (lastDigit >= 2 && lastDigit <= 4) {
-      return `⏳ Через ${days} дня`;
-    }
-    return `⏳ Через ${days} дней`;
-  }
 
-  // Функция для достижений (только текст)
-  function getDaysTextForAchievements(days) {
-    const lastDigit = days % 10;
-    const lastTwoDigits = days % 100;
-    
-    if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    // Функция для достижений (только текст)
+    function getDaysTextForAchievements(days) {
+      const lastDigit = days % 10;
+      const lastTwoDigits = days % 100;
+      
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        return 'дней';
+      }
+      if (lastDigit === 1) {
+        return 'день';
+      }
+      if (lastDigit >= 2 && lastDigit <= 4) {
+        return 'дня';
+      }
       return 'дней';
     }
-    if (lastDigit === 1) {
-      return 'день';
-    }
-    if (lastDigit >= 2 && lastDigit <= 4) {
-      return 'дня';
-    }
-    return 'дней';
-  }
 
-  function renderAchievements() {
-    const startDate = new Date('2023-06-01');
-    const today = new Date();
-    const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-    
-    console.log('Дней вместе:', daysTogether);
-    
-    const achievementsContainer = document.getElementById('achievementsList');
-    achievementsContainer.innerHTML = '';
-    
-    achievements.forEach(achievement => {
-      const isUnlocked = daysTogether >= achievement.days;
-      const achievementElement = document.createElement('div');
-      achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
-      
-      let progressText = '';
-      if (!isUnlocked && daysTogether > 0) {
-        const progress = Math.min(100, (daysTogether / achievement.days) * 100);
-        progressText = `<div style="margin-top: 5px; font-size: 0.8rem; color: #666;">
-          Прогресс: ${Math.floor(progress)}% (${daysTogether}/${achievement.days} дней)
-        </div>`;
-      }
-      
-      achievementElement.innerHTML = `
-        <div class="achievement-icon">${achievement.icon}</div>
-        <div class="achievement-text">
-          <div class="achievement-desc">${achievement.desc}</div>
-          ${progressText}
-        </div>
-        <div>${achievement.days} ${getDaysTextForAchievements(achievement.days)}</div>
-      `;
-      achievementsContainer.appendChild(achievementElement);
-    });
-  }
-
-  // Календарь планирования
-  let plans = [];
-  let editingIndex = null;
-
-  function renderPlans() {
-    const plansContainer = document.getElementById('plansList');
-    console.log('Отрисовка планов:', plans);
-    
-    plansContainer.innerHTML = '';
-    
-    if (plans.length === 0) {
-      plansContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Пока нет запланированных событий</div>';
-      return;
-    }
-    
-    // СОРТИРОВКА: от ближайшей даты к самой поздней
-    const sortedPlans = [...plans].sort((a, b) => {
-      try {
-        const dateA = new Date(a.date + (a.time ? 'T' + a.time : ''));
-        const dateB = new Date(b.date + (b.time ? 'T' + b.time : ''));
-        return dateA - dateB;
-      } catch (error) {
-        console.error('Ошибка сортировки дат:', error);
-        return 0;
-      }
-    });
-    
-    console.log('Отсортированные планы:', sortedPlans);
-    
-    sortedPlans.forEach((plan, index) => {
-      const originalIndex = plans.indexOf(plan);
-      const planElement = document.createElement('div');
-      planElement.className = 'plan-item';
-      
-      // Добавляем иконку срочности для ближайших событий
+    function renderAchievements() {
+      const startDate = new Date('2023-06-01');
       const today = new Date();
-      const planDate = new Date(plan.date + (plan.time ? 'T' + plan.time : ''));
-      const daysDiff = Math.ceil((planDate - today) / (1000 * 60 * 60 * 24));
+      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
       
-      let urgencyIcon = '';
-      if (daysDiff === 0) {
-        urgencyIcon = '🚨 '; // сегодня
-      } else if (daysDiff === 1) {
-        urgencyIcon = '⚠️ '; // завтра
-      } else if (daysDiff <= 7) {
-        urgencyIcon = '📌 '; // в течение недели
-      }
+      console.log('Дней вместе:', daysTogether);
       
-      const displayTime = plan.time ? ` в ${plan.time}` : '';
-      const formattedDate = formatDate(plan.date);
+      const achievementsContainer = document.getElementById('achievementsList');
+      achievementsContainer.innerHTML = '';
       
-      planElement.innerHTML = `
-        <div>
-          <strong>${urgencyIcon}${plan.title}</strong> - ${formattedDate}${displayTime}
-          ${daysDiff !== null && !isNaN(daysDiff) ? `<div style="font-size: 0.8rem; color: #666; margin-top: 2px;">${getDaysText(daysDiff)}</div>` : ''}
-        </div>
-        <div class="plan-actions">
-          <button class="edit-btn" onclick="editPlan(${originalIndex})">✏️</button>
-          <button class="delete-btn" onclick="removePlan(${originalIndex})">×</button>
-        </div>
-      `;
-      plansContainer.appendChild(planElement);
-    });
-  }
-
-  function addPlan() {
-    const title = document.getElementById('planTitle').value.trim();
-    const date = document.getElementById('planDate').value;
-    const time = document.getElementById('planTime').value;
-    
-    console.log('Добавление плана:', { title, date, time });
-    
-    if (title && date) {
-      if (editingIndex !== null) {
-        console.log('Редактирование плана с индексом:', editingIndex);
-        plans[editingIndex] = { title, date, time };
-        editingIndex = null;
-        document.getElementById('addPlan').textContent = 'Добавить событие';
-      } else {
-        console.log('Добавление нового плана');
-        plans.push({ title, date, time });
-      }
-      
-      renderPlans();
-      savePlansToFirebase();
-      
-      document.getElementById('planTitle').value = '';
-      document.getElementById('planDate').value = '';
-      document.getElementById('planTime').value = '';
-      
-      console.log('План добавлен, текущие планы:', plans);
-    } else {
-      alert('Пожалуйста, заполните название и дату события');
-    }
-  }
-
-  function editPlan(index) {
-    const plan = plans[index];
-    document.getElementById('planTitle').value = plan.title;
-    document.getElementById('planDate').value = plan.date;
-    document.getElementById('planTime').value = plan.time || '';
-    editingIndex = index;
-    document.getElementById('addPlan').textContent = 'Сохранить изменения';
-    document.getElementById('planTitle').scrollIntoView({behavior: 'smooth'});
-  }
-
-  function removePlan(index) {
-    if (confirm('Удалить это событие?')) {
-      plans.splice(index, 1);
-      savePlansToFirebase();
-    }
-  }
-
-  // Загрузка планов из Firebase
-  function loadPlansFromFirebase() {
-    console.log('Загрузка планов из Firebase...');
-    const plansRef = database.ref('plans');
-    plansRef.on('value', (snapshot) => {
-      const data = snapshot.val();
-      console.log('Данные из Firebase:', data);
-      if (data) {
-        plans = Object.values(data);
-        console.log('Планы загружены:', plans);
-        renderPlans();
-      } else {
-        plans = [];
-        console.log('Нет данных в Firebase');
-        renderPlans();
-      }
-    }, (error) => {
-      console.error('Ошибка загрузки из Firebase:', error);
-    });
-  }
-
-  // Сохранение планов в Firebase
-  function savePlansToFirebase() {
-    console.log('Сохранение планов в Firebase:', plans);
-    const plansRef = database.ref('plans');
-    
-    const plansObject = {};
-    plans.forEach((plan, index) => {
-      plansObject[index] = plan;
-    });
-    
-    plansRef.set(plansObject)
-      .then(() => {
-        console.log('Планы успешно сохранены в Firebase');
-      })
-      .catch((error) => {
-        console.error('Ошибка сохранения планов:', error);
-        alert('Ошибка синхронизации: ' + error.message);
+      achievements.forEach(achievement => {
+        const isUnlocked = daysTogether >= achievement.days;
+        const achievementElement = document.createElement('div');
+        achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+        
+        let progressText = '';
+        if (!isUnlocked && daysTogether > 0) {
+          const progress = Math.min(100, (daysTogether / achievement.days) * 100);
+          progressText = `<div style="margin-top: 5px; font-size: 0.8rem; color: #666;">
+            Прогресс: ${Math.floor(progress)}% (${daysTogether}/${achievement.days} дней)
+          </div>`;
+        }
+        
+        achievementElement.innerHTML = `
+          <div class="achievement-icon">${achievement.icon}</div>
+          <div class="achievement-text">
+            <div class="achievement-desc">${achievement.desc}</div>
+            ${progressText}
+          </div>
+          <div>${achievement.days} ${getDaysTextForAchievements(achievement.days)}</div>
+        `;
+        achievementsContainer.appendChild(achievementElement);
       });
-  }
+    }
 
-  document.getElementById('addPlan').addEventListener('click', addPlan);
+    // Календарь планирования
+    let plans = [];
+    let editingIndex = null;
 
-  // Инициализация
-  document.addEventListener('DOMContentLoaded', function() {
-    updateDaysCounter();
-    renderCalendar();
-    renderAchievements();
-    loadPlansFromFirebase();
-    
-    startHearts();
-    startStars();
-    
-    for(let i=0;i<10;i++) makeHeart();
-    
-    setInterval(updateDaysCounter, 24 * 60 * 60 * 1000);
-    window.editPlan = editPlan;
-    window.removePlan = removePlan;
-  });
+    function renderPlans() {
+      const plansContainer = document.getElementById('plansList');
+      console.log('Отрисовка планов:', plans);
+      
+      plansContainer.innerHTML = '';
+      
+      if (plans.length === 0) {
+        plansContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Пока нет запланированных событий</div>';
+        return;
+      }
+      
+      // СОРТИРОВКА: от ближайшей даты к самой поздней
+      const sortedPlans = [...plans].sort((a, b) => {
+        try {
+          const dateA = new Date(a.date + (a.time ? 'T' + a.time : ''));
+          const dateB = new Date(b.date + (b.time ? 'T' + b.time : ''));
+          return dateA - dateB;
+        } catch (error) {
+          console.error('Ошибка сортировки дат:', error);
+          return 0;
+        }
+      });
+      
+      console.log('Отсортированные планы:', sortedPlans);
+      
+      sortedPlans.forEach((plan, index) => {
+        const originalIndex = plans.indexOf(plan);
+        const planElement = document.createElement('div');
+        planElement.className = 'plan-item';
+        
+        // Добавляем иконку срочности для ближайших событий
+        const today = new Date();
+        const planDate = new Date(plan.date + (plan.time ? 'T' + plan.time : ''));
+        const daysDiff = Math.ceil((planDate - today) / (1000 * 60 * 60 * 24));
+        
+        let urgencyIcon = '';
+        if (daysDiff === 0) {
+          urgencyIcon = '🚨 '; // сегодня
+        } else if (daysDiff === 1) {
+          urgencyIcon = '⚠️ '; // завтра
+        } else if (daysDiff <= 7) {
+          urgencyIcon = '📌 '; // в течение недели
+        }
+        
+        const displayTime = plan.time ? ` в ${plan.time}` : '';
+        const formattedDate = formatDate(plan.date);
+        
+        planElement.innerHTML = `
+          <div>
+            <strong>${urgencyIcon}${plan.title}</strong> - ${formattedDate}${displayTime}
+            ${daysDiff !== null && !isNaN(daysDiff) ? `<div style="font-size: 0.8rem; color: #666; margin-top: 2px;">${getDaysText(daysDiff)}</div>` : ''}
+          </div>
+          <div class="plan-actions">
+            <button class="edit-btn" onclick="editPlan(${originalIndex})">✏️</button>
+            <button class="delete-btn" onclick="removePlan(${originalIndex})">×</button>
+          </div>
+        `;
+        plansContainer.appendChild(planElement);
+      });
+    }
+
+    function addPlan() {
+      const title = document.getElementById('planTitle').value.trim();
+      const date = document.getElementById('planDate').value;
+      const time = document.getElementById('planTime').value;
+      
+      console.log('Добавление плана:', { title, date, time });
+      
+      if (title && date) {
+        if (editingIndex !== null) {
+          console.log('Редактирование плана с индексом:', editingIndex);
+          plans[editingIndex] = { title, date, time };
+          editingIndex = null;
+          document.getElementById('addPlan').textContent = 'Добавить событие';
+        } else {
+          console.log('Добавление нового плана');
+          plans.push({ title, date, time });
+        }
+        
+        renderPlans();
+        savePlansToFirebase();
+        
+        document.getElementById('planTitle').value = '';
+        document.getElementById('planDate').value = '';
+        document.getElementById('planTime').value = '';
+        
+        console.log('План добавлен, текущие планы:', plans);
+      } else {
+        alert('Пожалуйста, заполните название и дату события');
+      }
+    }
+
+    function editPlan(index) {
+      const plan = plans[index];
+      document.getElementById('planTitle').value = plan.title;
+      document.getElementById('planDate').value = plan.date;
+      document.getElementById('planTime').value = plan.time || '';
+      editingIndex = index;
+      document.getElementById('addPlan').textContent = 'Сохранить изменения';
+      document.getElementById('planTitle').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function removePlan(index) {
+      if (confirm('Удалить это событие?')) {
+        plans.splice(index, 1);
+        savePlansToFirebase();
+      }
+    }
+
+    // Загрузка планов из Firebase
+    function loadPlansFromFirebase() {
+      console.log('Загрузка планов из Firebase...');
+      const plansRef = database.ref('plans');
+      plansRef.on('value', (snapshot) => {
+        const data = snapshot.val();
+        console.log('Данные из Firebase:', data);
+        if (data) {
+          plans = Object.values(data);
+          console.log('Планы загружены:', plans);
+          renderPlans();
+        } else {
+          plans = [];
+          console.log('Нет данных в Firebase');
+          renderPlans();
+        }
+      }, (error) => {
+        console.error('Ошибка загрузки из Firebase:', error);
+      });
+    }
+
+    // Сохранение планов в Firebase
+    function savePlansToFirebase() {
+      console.log('Сохранение планов в Firebase:', plans);
+      const plansRef = database.ref('plans');
+      
+      const plansObject = {};
+      plans.forEach((plan, index) => {
+        plansObject[index] = plan;
+      });
+      
+      plansRef.set(plansObject)
+        .then(() => {
+          console.log('Планы успешно сохранены в Firebase');
+        })
+        .catch((error) => {
+          console.error('Ошибка сохранения планов:', error);
+          alert('Ошибка синхронизации: ' + error.message);
+        });
+    }
+
+    document.getElementById('addPlan').addEventListener('click', addPlan);
+
+    // Инициализация приложения
+    document.addEventListener('DOMContentLoaded', function() {
+      // Инициализация Canvas и анимации
+      initCanvas();
+      animateParticles();
+      setupCanvasClickHandler();
+      
+      // Инициализация остальных компонентов
+      updateDaysCounter();
+      renderCalendar();
+      renderAchievements();
+      loadPlansFromFirebase();
+      
+      // Обновление счетчика дней каждый день
+      setInterval(updateDaysCounter, 24 * 60 * 60 * 1000);
+      
+      // Экспорт функций для глобального использования
+      window.editPlan = editPlan;
+      window.removePlan = removePlan;
+    });
   </script>
 </body>
 </html>
