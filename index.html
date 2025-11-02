@@ -814,38 +814,40 @@
 
     // Счетчик дней вместе
     function updateDaysCounter() {
-      const startDate = new Date('2023-06-01');
-      const today = new Date();
-      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-      
-      const daysCounter = document.getElementById('daysCounter');
-      const daysText = document.getElementById('daysText');
-      
-      daysCounter.textContent = daysTogether;
-      
-      // Красивое отображение текста в зависимости от количества дней
-      const lastDigit = daysTogether % 10;
-      const lastTwoDigits = daysTogether % 100;
-      
-      let dayText = 'дней';
-      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
-        dayText = 'дней';
-      } else if (lastDigit === 1) {
-        dayText = 'день';
-      } else if (lastDigit >= 2 && lastDigit <= 4) {
-        dayText = 'дня';
-      }
-      
-      daysText.textContent = `${dayText} счастья!`;
-      
-      // Добавляем дополнительное сообщение для круглых дат
-      if (daysTogether % 100 === 0) {
-        daysText.textContent += ` 🎉 Юбилей!`;
-      } else if (daysTogether % 365 === 0) {
-        const years = daysTogether / 365;
-        daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
-      }
-    }
+      const startDate = new Date('2023-06-01'); // Та же дата
+  const today = new Date();
+  const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  
+  const daysCounter = document.getElementById('daysCounter');
+  const daysText = document.getElementById('daysText');
+  
+  daysCounter.textContent = daysTogether;
+  
+  const lastDigit = daysTogether % 10;
+  const lastTwoDigits = daysTogether % 100;
+  
+  let dayText = 'дней';
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    dayText = 'дней';
+  } else if (lastDigit === 1) {
+    dayText = 'день';
+  } else if (lastDigit >= 2 && lastDigit <= 4) {
+    dayText = 'дня';
+  }
+  
+  daysText.textContent = `${dayText} счастья!`;
+  
+  // Добавляем дополнительное сообщение для круглых дат
+  if (daysTogether % 100 === 0) {
+    daysText.textContent += ` 🎉 Юбилей!`;
+  } else if (daysTogether % 365 === 0) {
+    const years = daysTogether / 365;
+    daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
+  }
+  
+  // Обновляем достижения при обновлении счетчика
+  renderAchievements();
+}
 
     // НОВЫЕ ФУНКЦИИ
     // Генератор комплиментов
@@ -914,14 +916,16 @@
 
     // Система достижений
     const achievements = [
-      { days: 1, desc: 'Старт великого приключения!', icon: '🌱', unlocked: true },
-      { days: 50, desc: 'Полтора месяца поцелуев и обнимашек', icon: '💝', unlocked: true },
-      { days: 100, desc: 'Сотня дней счастья - только начало!', icon: '🎯', unlocked: true },
-      { days: 365, desc: 'Целый год вместе!', icon: '🎉', unlocked: false },
-      { days: 500, desc: '500 дней - и мы всё ещё на взлёте!', icon: '🚀', unlocked: false },
-      { days: 700, desc: 'Почти 2 года - и с каждым днём всё лучше!', icon: '💫', unlocked: false },
-      { days: 1000, desc: 'Тысяча дней - мы делаем историю?', icon: '🏆', unlocked: false }
-    ];
+  { days: 1, desc: 'Старт великого приключения!', icon: '🌱', unlocked: true },
+  { days: 7, desc: 'Первая неделя вместе!', icon: '🌼', unlocked: true },
+  { days: 30, desc: 'Первый месяц любви', icon: '💝', unlocked: true },
+  { days: 100, desc: 'Сотня дней счастья!', icon: '🎯', unlocked: true },
+  { days: 182, desc: 'Полгода вместе!', icon: '🌟', unlocked: true },
+  { days: 365, desc: 'Целый год любви!', icon: '🎉', unlocked: true },
+  { days: 500, desc: '500 дней нежности', icon: '💫', unlocked: false },
+  { days: 730, desc: 'Два года вместе!', icon: '🏆', unlocked: false },
+  { days: 1000, desc: 'Тысяча дней счастья', icon: '💖', unlocked: false }
+];
 
     function getDaysText(days) {
   if (days < 0) return '❌ Просрочено';
@@ -944,27 +948,40 @@
 }
 
     function renderAchievements() {
-      const startDate = new Date('2023-06-01');
-      const today = new Date();
-      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
-      
-      const achievementsContainer = document.getElementById('achievementsList');
-      achievementsContainer.innerHTML = '';
-      
-      achievements.forEach(achievement => {
-        const isUnlocked = daysTogether >= achievement.days;
-        const achievementElement = document.createElement('div');
-        achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
-        achievementElement.innerHTML = `
-          <div class="achievement-icon">${achievement.icon}</div>
-          <div class="achievement-text">
-            <div class="achievement-desc">${achievement.desc}</div>
-          </div>
-          <div>${achievement.days} ${getDaysText(achievement.days)}</div>
-        `;
-        achievementsContainer.appendChild(achievementElement);
-      });
+      const startDate = new Date('2023-06-01'); // Правильная дата начала
+  const today = new Date();
+  const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  
+  console.log('Дней вместе:', daysTogether); // Для отладки
+  
+  const achievementsContainer = document.getElementById('achievementsList');
+  achievementsContainer.innerHTML = '';
+  
+  achievements.forEach(achievement => {
+    const isUnlocked = daysTogether >= achievement.days;
+    const achievementElement = document.createElement('div');
+    achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+    
+    // Добавляем прогресс для незаблокированных достижений
+    let progressText = '';
+    if (!isUnlocked && daysTogether > 0) {
+      const progress = Math.min(100, (daysTogether / achievement.days) * 100);
+      progressText = `<div style="margin-top: 5px; font-size: 0.8rem; color: #666;">
+        Прогресс: ${Math.floor(progress)}% (${daysTogether}/${achievement.days} дней)
+      </div>`;
     }
+    
+    achievementElement.innerHTML = `
+      <div class="achievement-icon">${achievement.icon}</div>
+      <div class="achievement-text">
+        <div class="achievement-desc">${achievement.desc}</div>
+        ${progressText}
+      </div>
+      <div>${achievement.days} ${getDaysText(achievement.days)}</div>
+    `;
+    achievementsContainer.appendChild(achievementElement);
+  });
+}
 
     // Календарь планирования
     let plans = [];    let editingIndex = null;
