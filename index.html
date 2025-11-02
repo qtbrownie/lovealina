@@ -844,8 +844,28 @@
     const years = daysTogether / 365;
     daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
   }
+  function getDaysText(days) {
+  if (days < 0) return '❌ Просрочено';
+  if (days === 0) return '🎯 Сегодня!';
+  if (days === 1) return '📅 Завтра';
   
-  function getDaysTextForAchievements(days) {
+  const lastDigit = days % 10;
+  const lastTwoDigits = days % 100;
+  
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return `⏳ Через ${days} дней`;
+  }
+  if (lastDigit === 1) {
+    return `⏳ Через ${days} день`;
+  }
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return `⏳ Через ${days} дня`;
+  }
+  return `⏳ Через ${days} дней`;
+}
+
+// Функция для правильного склонения в достижениях (только текст)
+function getDaysTextForAchievements(days) {
   const lastDigit = days % 10;
   const lastTwoDigits = days % 100;
   
@@ -860,8 +880,40 @@
   }
   return 'дней';
 }
-      // Обновляем достижения при обновлении счетчика
-  renderAchievements();
+
+function renderAchievements() {
+  const startDate = new Date('2023-06-01');
+  const today = new Date();
+  const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+  
+  console.log('Дней вместе:', daysTogether);
+  
+  const achievementsContainer = document.getElementById('achievementsList');
+  achievementsContainer.innerHTML = '';
+  
+  achievements.forEach(achievement => {
+    const isUnlocked = daysTogether >= achievement.days;
+    const achievementElement = document.createElement('div');
+    achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+    
+    let progressText = '';
+    if (!isUnlocked && daysTogether > 0) {
+      const progress = Math.min(100, (daysTogether / achievement.days) * 100);
+      progressText = `<div style="margin-top: 5px; font-size: 0.8rem; color: #666;">
+        Прогресс: ${Math.floor(progress)}% (${daysTogether}/${achievement.days} дней)
+      </div>`;
+    }
+    
+    achievementElement.innerHTML = `
+      <div class="achievement-icon">${achievement.icon}</div>
+      <div class="achievement-text">
+        <div class="achievement-desc">${achievement.desc}</div>
+        ${progressText}
+      </div>
+      <div>${achievement.days} ${getDaysTextForAchievements(achievement.days)}</div>
+    `;
+    achievementsContainer.appendChild(achievementElement);
+  });
 }
 
     // НОВЫЕ ФУНКЦИИ
@@ -1011,7 +1063,22 @@ function renderAchievements() {
   return 'дней';
 }
 
-function renderAchievements() {
+function getDaysTextForAchievements(days) {
+  const lastDigit = days % 10;
+  const lastTwoDigits = days % 100;
+  
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return 'дней';
+  }
+  if (lastDigit === 1) {
+    return 'день';
+  }
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return 'дня';
+  }
+  return 'дней';
+}
+  function renderAchievements() {
   const startDate = new Date('2023-06-01');
   const today = new Date();
   const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
