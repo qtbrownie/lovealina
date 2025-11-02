@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>lovealina</title>
-   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
   <style>
     :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a;--text:#3b2a33}
@@ -203,9 +203,18 @@
       border-bottom: 1px solid rgba(255,200,220,0.5);
       margin: 0;
       transition: all 0.5s ease;
+      cursor: pointer;
+    }
+    .calendar-date:hover {
+      background: rgba(255,200,220,0.1);
+      border-radius: 8px;
+      padding: 10px;
     }
     .night-mode .calendar-date {
       border-bottom: 1px solid rgba(255,215,0,0.3);
+    }
+    .night-mode .calendar-date:hover {
+      background: rgba(255,215,0,0.1);
     }
     
     .calendar-date:last-child {
@@ -475,6 +484,117 @@
       font-weight: 700;
     }
 
+    /* Стили для модального окна с фотографиями */
+    .photo-modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.9);
+      z-index: 10000;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .photo-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      position: relative;
+      max-width: 90%;
+      max-height: 90%;
+      background: var(--card);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+    }
+
+    .modal-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 15px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid var(--accent);
+    }
+
+    .modal-title {
+      font-size: 1.3rem;
+      font-weight: 600;
+      color: var(--accent);
+      margin: 0;
+    }
+
+    .close-modal {
+      background: none;
+      border: none;
+      font-size: 2rem;
+      cursor: pointer;
+      color: var(--accent);
+      padding: 0;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo-gallery {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 15px;
+      max-height: 70vh;
+      overflow-y: auto;
+      padding: 10px 0;
+    }
+
+    .photo-item {
+      position: relative;
+      border-radius: 10px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+      aspect-ratio: 4/3;
+    }
+
+    .photo-item:hover {
+      transform: scale(1.05);
+    }
+
+    .photo-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-placeholder {
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--accent);
+      font-size: 3rem;
+    }
+
+    .no-photos {
+      text-align: center;
+      padding: 40px;
+      color: var(--text);
+      font-style: italic;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+
     /* Custom scrollbars */
     .plans-list::-webkit-scrollbar {
       width: 8px;
@@ -524,6 +644,18 @@
         right: 10px;
         padding: 8px 16px;
       }
+      .photo-gallery {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 10px;
+      }
+      .modal-content {
+        max-width: 95%;
+        max-height: 95%;
+        padding: 15px;
+      }
+      .modal-title {
+        font-size: 1.1rem;
+      }
     }
   </style>
 </head>
@@ -537,6 +669,20 @@
   <div class="star-counter">
     ⭐ <span id="starCount">0</span>
   </div>
+
+  <!-- Модальное окно для фотографий -->
+  <div class="photo-modal" id="photoModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Фотографии события</h3>
+        <button class="close-modal" id="closeModal">&times;</button>
+      </div>
+      <div class="photo-gallery" id="photoGallery">
+        <!-- Фотографии будут добавляться сюда -->
+      </div>
+    </div>
+  </div>
+
   <div class="card" role="main">
     <div class="header">
       <div class="logo" aria-hidden="true">
@@ -915,24 +1061,131 @@ loadCounters();
     return `${day}.${month}.${year}`;
   }
 
-  // Календарь событий
+  // Календарь событий с фотографиями
   const importantDates = [
-    { date: '2023-06-01', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
-    { date: '2023-06-04', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
-    { date: '2023-07-15', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
-    { date: '2024-01-22', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
-    { date: '2024-02-07', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
-    { date: '2024-03-24', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
-    { date: '2024-06-01', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
-    { date: '2024-09-02', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
-    { date: '2024-09-23', event: '📦 Первый совместный переезд', days: '480 дней' },
-    { date: '2025-04-16', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
-    { date: '2025-05-02', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
-    { date: '2025-05-25', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
-    { date: '2025-06-01', event: '✨ 730 ночей взаимной любви', days: '731 день' },
-    { date: '2025-08-11', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
-    { date: '2025-08-28', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
+    { 
+      date: '2023-06-01', 
+      event: '🌱 День, когда наши сердца нашли друг друга', 
+      days: 'Первый день',
+      photos: [
+        'https://images.unsplash.com/photo-1518568814500-bf0f8d125f46?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1518495973542-4542c06a5843?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2023-06-04', 
+      event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', 
+      days: '4 дня',
+      photos: [
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2023-07-15', 
+      event: '🚝 Ижевск стал свидетелем наших чувств', 
+      days: '45 дней',
+      photos: [
+        'https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1506634572416-48cdfe530110?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2024-01-22', 
+      event: '🔥 Незабываемый глэмпинг с друзьями', 
+      days: '235 дней',
+      photos: [
+        'https://images.unsplash.com/photo-1511988617509-a57c8a288659?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2024-02-07', 
+      event: '❄️ Зимняя Москва заставляла нас улыбаться', 
+      days: '251 день',
+      photos: [] // Нет фотографий
+    },
+    { 
+      date: '2024-03-24', 
+      event: '🏡 День, когда "я" и "ты" стали "мы"', 
+      days: '297 дней',
+      photos: [
+        'https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=400&h=300&fit=crop',
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2024-06-01', 
+      event: '🎂 365 восходов, которые я встречал с мыслями о тебе', 
+      days: '365 дней',
+      photos: [
+        'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&h=300&fit=crop'
+      ]
+    },
+    { 
+      date: '2024-09-02', 
+      event: '⛰️ Кавказские горы склонились перед нашей любовью', 
+      days: '459 дней',
+      photos: [
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=300&fit=crop'
+      ]
+    }
   ];
+
+  // Функции для работы с модальным окном
+  function openPhotoModal(eventTitle, photos) {
+    const modal = document.getElementById('photoModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const photoGallery = document.getElementById('photoGallery');
+    
+    modalTitle.textContent = eventTitle;
+    photoGallery.innerHTML = '';
+    
+    if (photos && photos.length > 0) {
+      photos.forEach(photoUrl => {
+        const photoItem = document.createElement('div');
+        photoItem.className = 'photo-item';
+        photoItem.innerHTML = `
+          <img src="${photoUrl}" alt="${eventTitle}" loading="lazy">
+        `;
+        photoGallery.appendChild(photoItem);
+      });
+    } else {
+      photoGallery.innerHTML = `
+        <div class="no-photos">
+          <div class="photo-placeholder">📷</div>
+          <p style="margin-top: 10px;">Пока нет фотографий для этого события</p>
+        </div>
+      `;
+    }
+    
+    modal.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closePhotoModal() {
+    const modal = document.getElementById('photoModal');
+    modal.classList.remove('active');
+    document.body.style.overflow = 'auto';
+  }
+
+  // Обработчики для модального окна
+  document.getElementById('closeModal').addEventListener('click', closePhotoModal);
+  
+  // Закрытие по клику вне контента
+  document.getElementById('photoModal').addEventListener('click', function(e) {
+    if (e.target === this) {
+      closePhotoModal();
+    }
+  });
+  
+  // Закрытие по ESC
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+      closePhotoModal();
+    }
+  });
 
   function renderCalendar() {
     const calendarContainer = document.getElementById('calendarDates');
@@ -941,6 +1194,11 @@ loadCounters();
     importantDates.forEach(item => {
       const dateElement = document.createElement('div');
       dateElement.className = 'calendar-date';
+      dateElement.style.cursor = 'pointer';
+      dateElement.addEventListener('click', () => {
+        openPhotoModal(item.event, item.photos);
+      });
+      
       dateElement.innerHTML = `
         <span class="date-event">${item.event}</span>
         <span class="date-days">${formatDate(item.date)} (${item.days})</span>
