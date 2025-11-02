@@ -627,13 +627,38 @@ const heartCountElement = document.getElementById('heartCount');
 const starCountElement = document.getElementById('starCount');
 let isNightMode = false;
 
-// Загрузка счетчиков из localStorage
-heartExplosionCount = parseInt(localStorage.getItem('heartExplosionCount')) || 0;
-starExplosionCount = parseInt(localStorage.getItem('starExplosionCount')) || 0;
+// Загрузка счетчиков из Firebase
+function loadCountersFromFirebase() {
+  const countersRef = database.ref('counters');
+  countersRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      heartExplosionCount = data.hearts || 0;
+      starExplosionCount = data.stars || 0;
+      
+      heartCountElement.textContent = heartExplosionCount;
+      starCountElement.textContent = starExplosionCount;
+    }
+  });
+}
+
+// Сохранение счетчиков в Firebase
+function saveCountersToFirebase() {
+  const countersRef = database.ref('counters');
+  countersRef.set({
+    hearts: heartExplosionCount,
+    stars: starExplosionCount
+  }).catch((error) => {
+    console.error('Ошибка сохранения счетчиков:', error);
+  });
+}
 
 // Обновляем отображение счетчиков
 heartCountElement.textContent = heartExplosionCount;
 starCountElement.textContent = starExplosionCount;
+
+// Загружаем счетчики при запуске
+loadCountersFromFirebase();
 
     // Функция для создания частиц при взрыве сердца
   function createHeartParticles(rect) {
@@ -724,8 +749,8 @@ starCountElement.textContent = starExplosionCount;
   heartExplosionCount++;
   heartCountElement.textContent = heartExplosionCount;
   
-  // Сохраняем в localStorage
-  localStorage.setItem('heartExplosionCount', heartExplosionCount);
+  // Сохраняем в Firebase
+  saveCountersToFirebase();
   
   // Добавляем анимацию к счетчику
   heartCountElement.style.transform = 'scale(1.3)';
@@ -770,8 +795,8 @@ starCountElement.textContent = starExplosionCount;
   starExplosionCount++;
   starCountElement.textContent = starExplosionCount;
   
-  // Сохраняем в localStorage
-  localStorage.setItem('starExplosionCount', starExplosionCount);
+  // Сохраняем в Firebase
+  saveCountersToFirebase();
   
   // Добавляем анимацию к счетчику
   starCountElement.style.transform = 'scale(1.3)';
