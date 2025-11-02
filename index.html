@@ -51,7 +51,21 @@
     h1{font-size:1.6rem;margin:0}
     p.lead{margin:8px 0 0;color:#5b3f47}
 
-    .question{margin-top:22px;padding:18px;border-radius:12px;background:linear-gradient(180deg, rgba(255,245,247,0.9), rgba(255,240,244,0.8));border:1px solid rgba(255,200,220,0.6)}
+    /* Отдельные секции */
+    .section {
+      background: rgba(255,255,255,0.95);
+      border-radius: 15px;
+      padding: 20px;
+      margin: 15px 0;
+      box-shadow: 0 5px 20px rgba(255,92,138,0.1);
+      border: 2px dashed rgba(255,92,138,0.3);
+    }
+
+    .question-section {
+      background:linear-gradient(180deg, rgba(255,245,247,0.9), rgba(255,240,244,0.8));
+      border:1px solid rgba(255,200,220,0.6);
+    }
+
     .q-text{font-size:1.25rem;margin:0 0 16px}
     .buttons{display:flex;gap:12px;align-items:center}
     button{cursor:pointer;border:0;padding:12px 18px;border-radius:12px;font-weight:600}
@@ -60,13 +74,31 @@
 
     /* reveal spoilers */
     .spoilers-container {
-      margin-top: 0;
+      margin-top: 15px;
     }
-    .spoilers{display:grid;gap:12px}
-    .spoiler{background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(200,150,170,0.12);overflow:hidden;max-height:0;opacity:0;transition:max-height 450ms ease,opacity 350ms ease,padding 350ms}
+    .spoilers{display:grid;gap:10px}
+    .spoiler{background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(200,150,170,0.12);overflow:hidden;max-height:0;opacity:0;transition:max-height 450ms ease,opacity 350ms ease,padding 350ms; position: relative;}
     .spoiler.open{max-height:600px;opacity:1;padding:14px;overflow-y:auto}
     .spoiler h3{margin:0 0 6px}
     .continue{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#ffd6e7,#ffb0d0);font-weight:700}
+
+    /* Кнопка закрытия спойлера */
+    .close-spoiler {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      background: #ff6b6b;
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 25px;
+      height: 25px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
 
     footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
 
@@ -99,12 +131,6 @@
 
     /* Новые функции */
     .relationship-calendar {
-      background: rgba(255,255,255,0.95);
-      border-radius: 15px;
-      padding: 25px 20px 20px;
-      margin: 25px 0 15px;
-      box-shadow: 0 5px 20px rgba(255,92,138,0.1);
-      border: 2px dashed rgba(255,92,138,0.3);
       position: relative;
     }
     
@@ -119,10 +145,11 @@
       margin: 0;
       border: 2px solid var(--accent);
       white-space: nowrap;
+      z-index: 2;
     }
     
     .calendar-dates-container {
-      margin-top: 0;
+      margin-top: 10px;
     }
     
     .calendar-date {
@@ -152,7 +179,7 @@
 
     .compliment-generator {
   text-align: center;
-  margin: 5px 0;
+  margin: 10px 0;
 }
 
 .compliment-box {
@@ -371,23 +398,26 @@
       </div>
     </div>
 
-    <div class="question" aria-live="polite">
+    <!-- Секция 1: Кнопки и спойлеры -->
+    <div class="section question-section">
       <p class="q-text">Ты меня любишь?</p>
       <div class="buttons" style="position:relative">
         <button class="yes" id="yesBtn">Да, очень ❤️</button>
         <button class="no" id="noBtn" aria-label="Нет">Нет</button>
       </div>
 
-      <!-- Контейнер для спойлеров - теперь они будут появляться здесь -->
+      <!-- Контейнер для спойлеров -->
       <div class="spoilers-container">
         <div class="spoilers" id="spoilers">
           <div class="spoiler" id="s1">
+            <button class="close-spoiler">×</button>
             <h3>Наша первая встреча</h3>
             <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
             <button class="continue">Продолжить</button>
           </div>
 
           <div class="spoiler" id="s2">
+            <button class="close-spoiler">×</button>
             <h3>Память</h3>
             <p>Это я смотрю на своё счастье</p>
             <div class="polaroid">
@@ -398,6 +428,7 @@
           </div>
 
           <div class="spoiler" id="s3">
+            <button class="close-spoiler">×</button>
             <h3>Сюрприз</h3>
             <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
             <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
@@ -405,6 +436,7 @@
           </div>
 
           <div class="spoiler" id="s4">
+            <button class="close-spoiler">×</button>
             <details>
               <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
               <div class="polaroid">
@@ -415,8 +447,10 @@
           </div>
         </div>
       </div>
+    </div>
 
-      <!-- Новые секции -->
+    <!-- Секция 2: Комплименты, даты и достижения -->
+    <div class="section">
       <div class="compliment-generator">
         <button class="generate-compliment" id="generateCompliment">
           Получить комплимент ✨
@@ -439,7 +473,10 @@
           <!-- Достижения будут добавлены через JavaScript -->
         </div>
       </div>
+    </div>
 
+    <!-- Секция 3: Планировщик -->
+    <div class="section">
       <div class="planning-calendar">
         <h3>📝 Планируем вместе</h3>
         <div class="planning-form">
@@ -534,27 +571,29 @@ setTimeout(() => {
     // spawn hearts occasionally
     setInterval(()=>{ for(let i=0;i<4;i++) makeHeart(); }, 800);
 
-    // playful NO button
+    // playful NO button - ИСПРАВЛЕННАЯ ВЕРСИЯ
     const noBtn = document.getElementById('noBtn');
     const yesBtn = document.getElementById('yesBtn');
 
     function moveNo(){
         const rect = noBtn.getBoundingClientRect();
-        const vw = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-        const vh = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
         const btnWidth = rect.width;
         const btnHeight = rect.height;
         
-        // Ограничиваем координаты, чтобы кнопка не выходила за экран
-        const maxX = vw - btnWidth - 30;
-        const maxY = vh - btnHeight - 30;
+        // Ограничиваем координаты с учетом размеров кнопки
+        const maxX = vw - btnWidth - 10;
+        const maxY = vh - btnHeight - 10;
         
-        const x = Math.max(30, Math.min(maxX, Math.random() * maxX));
-        const y = Math.max(30, Math.min(maxY, Math.random() * maxY));
+        // Генерируем случайные координаты в пределах видимой области
+        const x = Math.max(10, Math.min(maxX, Math.random() * maxX));
+        const y = Math.max(10, Math.min(maxY, Math.random() * maxY));
         
         noBtn.style.position = 'fixed';
         noBtn.style.left = x + 'px';
         noBtn.style.top = y + 'px';
+        noBtn.style.zIndex = '1000';
         noBtn.classList.add('chase');
     }
 
@@ -591,6 +630,18 @@ setTimeout(() => {
 
     // continue buttons inside spoilers also reveal next
     document.querySelectorAll('.continue').forEach(b=>b.addEventListener('click',()=>revealNext()));
+
+    // Закрытие спойлеров
+    document.querySelectorAll('.close-spoiler').forEach(btn => {
+      btn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const spoiler = this.closest('.spoiler');
+        spoiler.classList.remove('open');
+        spoiler.style.maxHeight = '0';
+        spoiler.style.opacity = '0';
+        spoiler.style.padding = '0 14px';
+      });
+    });
 
     // НОВЫЕ ФУНКЦИИ
     // Генератор комплиментов
