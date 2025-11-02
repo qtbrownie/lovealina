@@ -754,4 +754,106 @@ function getDaysText(days) {
   const achievementsContainer = document.getElementById('achievementsList');
   achievementsContainer.innerHTML = '';
   
-  achievements.forEach
+  achievements.forEach(achievement => {
+    const isUnlocked = daysTogether >= achievement.days;
+    const achievementElement = document.createElement('div');
+    achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+    achievementElement.innerHTML = `
+      <div class="achievement-icon">${achievement.icon}</div>
+      <div class="achievement-text">
+        <div class="achievement-desc">${achievement.desc}</div>
+      </div>
+      <div>${achievement.days} ${getDaysText(achievement.days)}</div>
+    `;
+    achievementsContainer.appendChild(achievementElement);
+  });
+  
+  // Показываем текущий счетчик дней
+  const daysCounter = document.createElement('div');
+  daysCounter.style.cssText = 'text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);';
+  daysCounter.textContent = `Мы вместе уже ${daysTogether} ${getDaysText(daysTogether)}! 💕`;
+  achievementsContainer.appendChild(daysCounter);
+}
+
+    // Календарь планирования
+    let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
+    let editingIndex = null;
+
+    function renderPlans() {
+      const plansContainer = document.getElementById('plansList');
+      plansContainer.innerHTML = '';
+      
+      plans.forEach((plan, index) => {
+        const planElement = document.createElement('div');
+        planElement.className = 'plan-item';
+        const displayTime = plan.time ? ` в ${plan.time}` : '';
+        const formattedDate = formatDate(plan.date);
+        planElement.innerHTML = `
+          <div>
+            <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
+          </div>
+          <div class="plan-actions">
+            <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
+            <button class="delete-btn" onclick="removePlan(${index})">×</button>
+          </div>
+        `;
+        plansContainer.appendChild(planElement);
+      });
+    }
+
+    function addPlan() {
+      const title = document.getElementById('planTitle').value;
+      const date = document.getElementById('planDate').value;
+      const time = document.getElementById('planTime').value;
+      
+      if (title && date) {
+        if (editingIndex !== null) {
+          // Редактируем существующее событие
+          plans[editingIndex] = { title, date, time };
+          editingIndex = null;
+          document.getElementById('addPlan').textContent = 'Добавить событие';
+        } else {
+          // Добавляем новое событие
+          plans.push({ title, date, time });
+        }
+        
+        localStorage.setItem('ourPlans', JSON.stringify(plans));
+        renderPlans();
+        document.getElementById('planTitle').value = '';
+        document.getElementById('planDate').value = '';
+        document.getElementById('planTime').value = '';
+      }
+    }
+
+    function editPlan(index) {
+      const plan = plans[index];
+      document.getElementById('planTitle').value = plan.title;
+      document.getElementById('planDate').value = plan.date;
+      document.getElementById('planTime').value = plan.time || '';
+      editingIndex = index;
+      document.getElementById('addPlan').textContent = 'Сохранить изменения';
+      
+      // Прокручиваем к форме редактирования
+      document.getElementById('planTitle').scrollIntoView({behavior: 'smooth'});
+    }
+
+    function removePlan(index) {
+      plans.splice(index, 1);
+      localStorage.setItem('ourPlans', JSON.stringify(plans));
+      renderPlans();
+    }
+
+    document.getElementById('addPlan').addEventListener('click', addPlan);
+
+    // Инициализация
+    document.addEventListener('DOMContentLoaded', function() {
+      renderCalendar();
+      renderAchievements();
+      renderPlans();
+    });
+
+    // Initialize some hearts on load
+    for(let i=0;i<10;i++) makeHeart();
+  </script>
+</body>
+</html>
