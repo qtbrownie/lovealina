@@ -946,13 +946,28 @@
   }
   return `⏳ Через ${days} дней`;
 }
+function getDaysTextForAchievements(days) {
+  const lastDigit = days % 10;
+  const lastTwoDigits = days % 100;
+  
+  if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+    return 'дней';
+  }
+  if (lastDigit === 1) {
+    return 'день';
+  }
+  if (lastDigit >= 2 && lastDigit <= 4) {
+    return 'дня';
+  }
+  return 'дней';
+}
 
-    function renderAchievements() {
-      const startDate = new Date('2023-06-01'); // Правильная дата начала
+function renderAchievements() {
+  const startDate = new Date('2023-06-01');
   const today = new Date();
   const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
   
-  console.log('Дней вместе:', daysTogether); // Для отладки
+  console.log('Дней вместе:', daysTogether);
   
   const achievementsContainer = document.getElementById('achievementsList');
   achievementsContainer.innerHTML = '';
@@ -962,7 +977,6 @@
     const achievementElement = document.createElement('div');
     achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
     
-    // Добавляем прогресс для незаблокированных достижений
     let progressText = '';
     if (!isUnlocked && daysTogether > 0) {
       const progress = Math.min(100, (daysTogether / achievement.days) * 100);
@@ -977,11 +991,20 @@
         <div class="achievement-desc">${achievement.desc}</div>
         ${progressText}
       </div>
-      <div>${achievement.days} ${getDaysText(achievement.days)}</div>
+      <div>${achievement.days} ${getDaysTextForAchievements(achievement.days)}</div>
     `;
     achievementsContainer.appendChild(achievementElement);
   });
 }
+    
+    achievementElement.innerHTML = `
+  <div class="achievement-icon">${achievement.icon}</div>
+  <div class="achievement-text">
+    <div class="achievement-desc">${achievement.desc}</div>
+    ${progressText}
+  </div>
+  <div>${achievement.days} ${getDaysTextForAchievements(achievement.days)}</div>  <!-- ИЗМЕНИТЕ ЭТУ СТРОКУ -->
+`;
 
     // Календарь планирования
     let plans = [];    let editingIndex = null;
@@ -997,11 +1020,16 @@
     return;
   }
   
-  // СОРТИРОВКА: от ближайшей даты к самой поздней
+  // СОРТИРОВКА с проверкой валидности дат
   const sortedPlans = [...plans].sort((a, b) => {
-    const dateA = new Date(a.date + (a.time ? 'T' + a.time : ''));
-    const dateB = new Date(b.date + (b.time ? 'T' + b.time : ''));
-    return dateA - dateB; // от старых к новым
+    try {
+      const dateA = new Date(a.date + (a.time ? 'T' + a.time : ''));
+      const dateB = new Date(b.date + (b.time ? 'T' + b.time : ''));
+      return dateA - dateB;
+    } catch (error) {
+      console.error('Ошибка сортировки дат:', error);
+      return 0;
+    }
   });
   
   console.log('Отсортированные планы:', sortedPlans);
@@ -1031,7 +1059,7 @@
     planElement.innerHTML = `
       <div>
         <strong>${urgencyIcon}${plan.title}</strong> - ${formattedDate}${displayTime}
-        ${daysDiff >= 0 ? `<div style="font-size: 0.8rem; color: #666; margin-top: 2px;">${getDaysText(daysDiff)}</div>` : ''}
+  ${daysDiff !== null && !isNaN(daysDiff) ? `<div style="font-size: 0.8rem; color: #666; margin-top: 2px;">${getDaysText(daysDiff)}</div>` : ''}
       </div>
       <div class="plan-actions">
         <button class="edit-btn" onclick="editPlan(${originalIndex})">✏️</button>
