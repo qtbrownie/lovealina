@@ -59,8 +59,8 @@
     .stars i{
       position:absolute;
       display:block;
-      width:36px; /* Увеличил размер звезд */
-      height:36px; /* Увеличил размер звезд */
+      width:36px;
+      height:36px;
       background:#ffd700;
       clip-path: polygon(
         50% 0%,
@@ -371,21 +371,20 @@
       color: #0a0a2a;
     }
 
-    /* Счетчик дней - уменьшенная рамка */
+    /* Счетчик дней */
     .days-counter-section {
       text-align: center;
-      padding: 20px 15px; /* Уменьшил отступы */
-      margin: 10px 0; /* Уменьшил внешние отступы */
+      padding: 30px 20px;
     }
     
     .days-counter {
-      font-size: 3rem; /* Немного уменьшил шрифт */
+      font-size: 3.5rem;
       font-weight: 800;
       background: linear-gradient(135deg, #ff6b95, #ff8eb4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin: 5px 0; /* Уменьшил отступы */
+      margin: 10px 0;
       animation: pulse 2s ease-in-out infinite;
     }
     .night-mode .days-counter {
@@ -396,7 +395,7 @@
     }
     
     .days-text {
-      font-size: 1.1rem; /* Немного уменьшил шрифт */
+      font-size: 1.2rem;
       color: var(--text);
       font-weight: 600;
     }
@@ -490,116 +489,6 @@
       background: rgba(255,215,0,0.2);
     }
 
-    /* Интерактивная лента времени */
-    .timeline-section {
-      position: relative;
-      overflow: hidden;
-    }
-    
-    .timeline-container {
-      position: relative;
-      padding: 20px 0;
-      max-height: 400px;
-      overflow-y: auto;
-    }
-    
-    .timeline {
-      position: relative;
-      padding-left: 30px;
-    }
-    
-    .timeline::before {
-      content: '';
-      position: absolute;
-      left: 15px;
-      top: 0;
-      bottom: 0;
-      width: 3px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-    
-    .timeline-item {
-      position: relative;
-      margin-bottom: 25px;
-      padding: 15px;
-      background: rgba(255,255,255,0.9);
-      border-radius: 10px;
-      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-    
-    .night-mode .timeline-item {
-      background: rgba(30,30,58,0.9);
-    }
-    
-    .timeline-item:hover {
-      transform: translateX(5px);
-      box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-    }
-    
-    .timeline-item::before {
-      content: '';
-      position: absolute;
-      left: -25px;
-      top: 20px;
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: var(--accent);
-      border: 3px solid var(--bg1);
-    }
-    
-    .night-mode .timeline-item::before {
-      border: 3px solid var(--bg1);
-    }
-    
-    .timeline-date {
-      font-weight: 600;
-      color: var(--accent);
-      margin-bottom: 5px;
-      display: flex;
-      align-items: center;
-    }
-    
-    .timeline-event {
-      font-size: 0.95rem;
-      line-height: 1.4;
-    }
-    
-    .timeline-icon {
-      margin-right: 8px;
-      font-size: 1.1rem;
-    }
-    
-    .timeline-controls {
-      display: flex;
-      justify-content: center;
-      gap: 10px;
-      margin-top: 15px;
-    }
-    
-    .timeline-btn {
-      background: var(--accent);
-      color: white;
-      border: none;
-      padding: 8px 15px;
-      border-radius: 20px;
-      cursor: pointer;
-      font-size: 0.9rem;
-      transition: all 0.3s ease;
-    }
-    
-    .night-mode .timeline-btn {
-      color: #0a0a2a;
-    }
-    
-    .timeline-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
-    }
-
     @media (max-width:520px){
       body{padding:16px}
       .header{gap:10px}
@@ -621,10 +510,7 @@
         min-width: auto;
       }
       .days-counter {
-        font-size: 2.2rem; /* Уменьшил для мобильных */
-      }
-      .days-counter-section {
-        padding: 15px 10px; /* Еще уменьшил для мобильных */
+        font-size: 2.5rem;
       }
       .theme-toggle {
         top: 10px;
@@ -635,12 +521,6 @@
         top: 10px;
         right: 10px;
         padding: 8px 16px;
-      }
-      .timeline {
-        padding-left: 20px;
-      }
-      .timeline-item::before {
-        left: -18px;
       }
     }
   </style>
@@ -666,7 +546,7 @@
       </div>
     </div>
 
-    <!-- Счетчик дней вместе - уменьшенная рамка -->
+    <!-- Счетчик дней вместе -->
     <div class="section days-counter-section">
       <h3>📅 Мы вместе уже</h3>
       <div class="days-counter" id="daysCounter">0</div>
@@ -686,21 +566,7 @@
       </div>
     </div>
 
-    <!-- Секция 2: Интерактивная лента времени -->
-    <div class="section timeline-section">
-      <h3>📜 Интерактивная лента времени</h3>
-      <div class="timeline-container">
-        <div class="timeline" id="timeline">
-          <!-- Элементы ленты времени будут добавлены через JavaScript -->
-        </div>
-      </div>
-      <div class="timeline-controls">
-        <button class="timeline-btn" id="prevTimeline">◀ Назад</button>
-        <button class="timeline-btn" id="nextTimeline">Вперёд ▶</button>
-      </div>
-    </div>
-
-    <!-- Секция 3: Важные даты -->
+    <!-- Секция 2: Важные даты -->
     <div class="section dates-section">
       <h3>📅 Наши важные даты</h3>
       <div class="calendar-dates-container" id="calendarDates">
@@ -708,7 +574,7 @@
       </div>
     </div>
 
-    <!-- Секция 4: Достижения -->
+    <!-- Секция 3: Достижения -->
     <div class="section">
       <div class="achievements-system">
         <h3>🏆 Наши достижения</h3>
@@ -718,7 +584,7 @@
       </div>
     </div>
 
-    <!-- Секция 5: Планировщик -->
+    <!-- Секция 4: Планировщик -->
     <div class="section">
       <div class="planning-calendar">
         <h3>📝 Планируем вместе</h3>
@@ -743,7 +609,6 @@
     const heartCountElement = document.getElementById('heartCount');
     const starCountElement = document.getElementById('starCount');
     let isNightMode = false;
-    let currentTimelineIndex = 0;
 
     // Функция для создания частиц при взрыве сердца
     function createHeartParticles(rect) {
@@ -965,6 +830,7 @@
       }
     }
 
+    // НОВЫЕ ФУНКЦИИ
     // Генератор комплиментов
     const compliments = [
       "Ты самое красивое, что случалось в моей жизни! 🌸",
@@ -1028,66 +894,6 @@
         calendarContainer.appendChild(dateElement);
       });
     }
-
-    // Интерактивная лента времени
-    const timelineEvents = [
-      { date: '01.06.2023', event: 'Начало нашей истории любви', icon: '💕' },
-      { date: '04.06.2023', event: 'Первая поездка в Иннополис и Свияжск', icon: '🏰' },
-      { date: '15.07.2023', event: 'Путешествие в Ижевск', icon: '🚝' },
-      { date: '22.01.2024', event: 'Незабываемый глэмпинг с друзьями', icon: '🔥' },
-      { date: '07.02.2024', event: 'Зимняя поездка в Москву', icon: '❄️' },
-      { date: '24.03.2024', event: 'Начало совместной жизни', icon: '🏡' },
-      { date: '01.06.2024', event: 'Первый год вместе!', icon: '🎂' },
-      { date: '02.09.2024', event: 'Путешествие на Кавказ', icon: '⛰️' },
-      { date: '23.09.2024', event: 'Первый совместный переезд', icon: '📦' },
-      { date: '16.04.2025', event: 'Ещё один переезд', icon: '🔁' },
-      { date: '02.05.2025', event: 'Появление Эми в нашей семье', icon: '🐾' },
-      { date: '25.05.2025', event: 'Поездка в Утрау', icon: '☀️' },
-      { date: '01.06.2025', event: 'Два года вместе!', icon: '✨' },
-      { date: '11.08.2025', event: 'Поездка в Займище', icon: '🌅' },
-      { date: '28.08.2025', event: 'Москва-Петербург', icon: '🌉' }
-    ];
-
-    function renderTimeline() {
-      const timelineContainer = document.getElementById('timeline');
-      timelineContainer.innerHTML = '';
-      
-      // Показываем только 5 событий за раз
-      const startIndex = currentTimelineIndex;
-      const endIndex = Math.min(startIndex + 5, timelineEvents.length);
-      
-      for (let i = startIndex; i < endIndex; i++) {
-        const event = timelineEvents[i];
-        const timelineItem = document.createElement('div');
-        timelineItem.className = 'timeline-item';
-        timelineItem.innerHTML = `
-          <div class="timeline-date">
-            <span class="timeline-icon">${event.icon}</span>
-            ${event.date}
-          </div>
-          <div class="timeline-event">${event.event}</div>
-        `;
-        timelineContainer.appendChild(timelineItem);
-      }
-      
-      // Обновляем состояние кнопок
-      document.getElementById('prevTimeline').disabled = currentTimelineIndex === 0;
-      document.getElementById('nextTimeline').disabled = endIndex >= timelineEvents.length;
-    }
-
-    document.getElementById('prevTimeline').addEventListener('click', function() {
-      if (currentTimelineIndex > 0) {
-        currentTimelineIndex = Math.max(0, currentTimelineIndex - 5);
-        renderTimeline();
-      }
-    });
-
-    document.getElementById('nextTimeline').addEventListener('click', function() {
-      if (currentTimelineIndex + 5 < timelineEvents.length) {
-        currentTimelineIndex = Math.min(timelineEvents.length - 5, currentTimelineIndex + 5);
-        renderTimeline();
-      }
-    });
 
     // Система достижений
     const achievements = [
@@ -1216,7 +1022,6 @@
     document.addEventListener('DOMContentLoaded', function() {
       updateDaysCounter();
       renderCalendar();
-      renderTimeline();
       renderAchievements();
       renderPlans();
       
