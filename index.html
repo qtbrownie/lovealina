@@ -105,6 +105,22 @@
       margin: 15px 0;
       box-shadow: 0 5px 20px rgba(255,92,138,0.1);
       border: 2px dashed rgba(255,92,138,0.3);
+      position: relative;
+    }
+    
+    .relationship-calendar h3 {
+      position: absolute;
+      top: -15px;
+      left: 20px;
+      background: linear-gradient(135deg, var(--bg1), var(--bg2));
+      padding: 5px 15px;
+      border-radius: 10px;
+      margin: 0;
+      border: 2px solid var(--accent);
+    }
+    
+    .calendar-dates-container {
+      margin-top: 25px;
     }
     
     .calendar-date {
@@ -131,14 +147,14 @@
 
     .compliment-generator {
   text-align: center;
-  margin: 20px 0;
+  margin: 10px 0;
 }
 
 .compliment-box {
   background: linear-gradient(135deg, #fff0f5, #ffe6f2);
   border-radius: 15px;
   padding: 15px;
-  margin: 15px 0;
+  margin: 10px 0;
   border: 2px solid var(--accent);
   min-height: 60px;
   display: flex;
@@ -158,6 +174,7 @@
   cursor: pointer;
   font-weight: 600;
   font-size: 0.9rem;
+  margin-bottom: 10px;
 }
 
     .achievements-system {
@@ -235,27 +252,37 @@
 
     .plan-actions {
       display: flex;
-      gap: 5px;
+      gap: 8px;
     }
 
     .edit-btn {
-      background: #4CAF50;
+      background: linear-gradient(135deg, #a8e6cf, #88d498);
       color: white;
       border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
+      border-radius: 8px;
+      padding: 8px 12px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      min-width: 40px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     .delete-btn {
-      background: #ff6b6b;
+      background: linear-gradient(90deg,#ff7aa3,#ff5480);
       color: white;
       border: none;
-      border-radius: 5px;
-      padding: 5px 10px;
+      border-radius: 8px;
+      padding: 8px 12px;
       cursor: pointer;
-      font-size: 0.8rem;
+      font-size: 0.9rem;
+      min-width: 40px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     /* Custom scrollbars */
@@ -303,6 +330,14 @@
       .spoiler.open{max-height:400px}
       .planning-form {
         grid-template-columns: 1fr;
+      }
+      .relationship-calendar h3 {
+        position: static;
+        margin-bottom: 15px;
+        text-align: center;
+      }
+      .calendar-dates-container {
+        margin-top: 0;
       }
     }
   </style>
@@ -370,17 +405,17 @@
 
       <!-- Новые секции -->
       <div class="compliment-generator">
-        <div class="compliment-box" id="complimentText">
-          Нажми кнопку для комплимента! 💝
-        </div>
         <button class="generate-compliment" id="generateCompliment">
           Получить комплимент ✨
         </button>
+        <div class="compliment-box" id="complimentText">
+          Здесь таится моя любовь 💝
+        </div>
       </div>
 
       <div class="relationship-calendar">
         <h3>📅 Наши важные даты</h3>
-        <div id="calendarDates">
+        <div class="calendar-dates-container" id="calendarDates">
           <!-- Даты будут добавлены через JavaScript -->
         </div>
       </div>
@@ -498,15 +533,15 @@ setTimeout(() => {
         const btnHeight = rect.height;
         
         // Ограничиваем координаты, чтобы кнопка не выходила за экран
-        const maxX = vw - btnWidth - 10; // 10px отступ от края
-        const maxY = vh - btnHeight - 10;
+        const maxX = vw - btnWidth - 20; // 20px отступ от края
+        const maxY = vh - btnHeight - 20;
         
         const x = Math.random() * maxX;
         const y = Math.random() * maxY;
         
         noBtn.style.position = 'fixed';
-        noBtn.style.left = Math.max(10, x) + 'px'; // минимум 10px от левого края
-        noBtn.style.top = Math.max(10, y) + 'px'; // минимум 10px от верхнего края
+        noBtn.style.left = Math.max(20, x) + 'px'; // минимум 20px от левого края
+        noBtn.style.top = Math.max(20, y) + 'px'; // минимум 20px от верхнего края
         noBtn.classList.add('chase');
     }
 
@@ -569,23 +604,29 @@ setTimeout(() => {
       document.getElementById('complimentText').textContent = randomCompliment;
     });
 
+    // Функция для форматирования даты в дд.мм.гггг
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}.${month}.${year}`;
+    }
+
     // Календарь событий
     const importantDates = [
-      { date: '01.06.2023', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
-      { date: '04.06.2023', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
-      { date: '15.07.2023', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
-      { date: '22.01.2024', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
-      { date: '07.02.2024', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
-      { date: '24.03.2024', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
-      { date: '01.06.2024', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
-      { date: '02.09.2024', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
-      { date: '23.09.2024', event: '📦 Первый совместный переезд', days: '480 дней' },
-      { date: '16.04.2025', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
-      { date: '02.05.2025', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
-      { date: '25.05.2025', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
-      { date: '01.06.2025', event: '✨ 730 ночей взаимной любви', days: '731 день' },
-      { date: '11.08.2025', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
-      { date: '28.08.2025', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
+      { date: '2023-06-01', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
+      { date: '2023-06-04', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
+      { date: '2023-07-15', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
+      { date: '2024-01-22', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
+      { date: '2024-02-07', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
+      { date: '2024-03-24', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
+      { date: '2024-06-01', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
+      { date: '2024-09-02', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
+      { date: '2024-09-23', event: '📦 Первый совместный переезд', days: '480 дней' },
+      { date: '2025-04-16', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
+      { date: '2025-05-02', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
+      { date: '2025-05-25', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
+      { date: '2025-06-01', event: '✨ 730 ночей взаимной любви', days: '731 день' },
+      { date: '2025-08-11', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
+      { date: '2025-08-28', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
     ];
 
     function renderCalendar() {
@@ -597,7 +638,7 @@ setTimeout(() => {
         dateElement.className = 'calendar-date';
         dateElement.innerHTML = `
           <span class="date-event">${item.event}</span>
-          <span class="date-days">${item.date} (${item.days})</span>
+          <span class="date-days">${formatDate(item.date)} (${item.days})</span>
         `;
         calendarContainer.appendChild(dateElement);
       });
@@ -672,9 +713,10 @@ function getDaysText(days) {
         const planElement = document.createElement('div');
         planElement.className = 'plan-item';
         const displayTime = plan.time ? ` в ${plan.time}` : '';
+        const formattedDate = formatDate(plan.date);
         planElement.innerHTML = `
           <div>
-            <strong>${plan.title}</strong> - ${plan.date}${displayTime}
+            <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
           </div>
           <div class="plan-actions">
             <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
