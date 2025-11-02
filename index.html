@@ -627,38 +627,36 @@ const heartCountElement = document.getElementById('heartCount');
 const starCountElement = document.getElementById('starCount');
 let isNightMode = false;
 
-// Загрузка счетчиков из Firebase
-function loadCountersFromFirebase() {
-  const countersRef = database.ref('counters');
-  countersRef.on('value', (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      heartExplosionCount = data.hearts || 0;
-      starExplosionCount = data.stars || 0;
-      
-      heartCountElement.textContent = heartExplosionCount;
-      starCountElement.textContent = starExplosionCount;
-    }
-  });
+// Генерация уникального ID устройства
+function getDeviceId() {
+  let deviceId = localStorage.getItem('deviceId');
+  if (!deviceId) {
+    // Создаем случайный ID из 12 символов
+    deviceId = 'device_' + Math.random().toString(36).substr(2, 9) + Date.now().toString(36).substr(4, 3);
+    localStorage.setItem('deviceId', deviceId);
+  }
+  return deviceId;
 }
 
-// Сохранение счетчиков в Firebase
-function saveCountersToFirebase() {
-  const countersRef = database.ref('counters');
-  countersRef.set({
-    hearts: heartExplosionCount,
-    stars: starExplosionCount
-  }).catch((error) => {
-    console.error('Ошибка сохранения счетчиков:', error);
-  });
+// Загрузка счетчиков из localStorage для этого устройства
+function loadCounters() {
+  const deviceId = getDeviceId();
+  heartExplosionCount = parseInt(localStorage.getItem(`heartCount_${deviceId}`)) || 0;
+  starExplosionCount = parseInt(localStorage.getItem(`starCount_${deviceId}`)) || 0;
+  
+  heartCountElement.textContent = heartExplosionCount;
+  starCountElement.textContent = starExplosionCount;
 }
 
-// Обновляем отображение счетчиков
-heartCountElement.textContent = heartExplosionCount;
-starCountElement.textContent = starExplosionCount;
+// Сохранение счетчиков в localStorage для этого устройства
+function saveCounters() {
+  const deviceId = getDeviceId();
+  localStorage.setItem(`heartCount_${deviceId}`, heartExplosionCount);
+  localStorage.setItem(`starCount_${deviceId}`, starExplosionCount);
+}
 
 // Загружаем счетчики при запуске
-loadCountersFromFirebase();
+loadCounters();
 
     // Функция для создания частиц при взрыве сердца
   function createHeartParticles(rect) {
@@ -749,8 +747,8 @@ loadCountersFromFirebase();
   heartExplosionCount++;
   heartCountElement.textContent = heartExplosionCount;
   
-  // Сохраняем в Firebase
-  saveCountersToFirebase();
+  // Сохраняем в localStorage для этого устройства
+  saveCounters();
   
   // Добавляем анимацию к счетчику
   heartCountElement.style.transform = 'scale(1.3)';
@@ -795,8 +793,8 @@ loadCountersFromFirebase();
   starExplosionCount++;
   starCountElement.textContent = starExplosionCount;
   
-  // Сохраняем в Firebase
-  saveCountersToFirebase();
+  // Сохраняем в localStorage для этого устройства
+  saveCounters();
   
   // Добавляем анимацию к счетчику
   starCountElement.style.transform = 'scale(1.3)';
