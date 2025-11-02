@@ -6,22 +6,17 @@
   <title>lovealina</title>
   <style>
     :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a;--text:#3b2a33}
-    .night-mode{--bg1:#0a0a2a;--bg2:#1a1a4a;--card:#1e1e3a;--accent:#8a2be2;--text:#e6e6ff}
+    .night-mode{--bg1:#0a0a2a;--bg2:#0a0a2a;--card:#1e1e3a;--accent:#ffd700;--text:#e6e6ff}
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;
       font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
-      background: radial-gradient(circle at 10% 10%, rgba(255,220,230,0.7), transparent 20%),
-                  linear-gradient(135deg,var(--bg1),var(--bg2));
+      background: var(--bg1);
       display:flex;align-items:flex-start;justify-content:center;padding:32px;color:var(--text);
       overflow-y:auto;
       min-height:100vh;
       transition: all 0.5s ease;
-    }
-    .night-mode body{
-      background: radial-gradient(circle at 10% 10%, rgba(138,43,226,0.3), transparent 20%),
-                  linear-gradient(135deg,var(--bg1),var(--bg2));
     }
 
    /* floating hearts - только в дневном режиме */
@@ -64,20 +59,31 @@
     .stars i{
       position:absolute;
       display:block;
-      width:8px;
-      height:8px;
-      background:#fff;
-      border-radius:50%;
+      width:28px;
+      height:28px;
+      background:#ffd700;
+      clip-path: polygon(
+        50% 0%,
+        61% 35%,
+        98% 35%,
+        68% 57%,
+        79% 91%,
+        50% 70%,
+        21% 91%,
+        32% 57%,
+        2% 35%,
+        39% 35%
+      );
       opacity:0.9;
       cursor:pointer;
-      box-shadow:0 0 12px #fff, 0 0 20px #8a2be2;
+      filter: drop-shadow(0 0 8px #ffd700) drop-shadow(0 0 12px #ffd700);
       transition:all 0.3s ease;
     }
     
     @keyframes starExplosion {
       0% { transform: scale(1); opacity: 1; }
-      50% { transform: scale(4); opacity: 0.7; }
-      100% { transform: scale(6); opacity: 0; }
+      50% { transform: scale(1.5); opacity: 0.7; }
+      100% { transform: scale(2); opacity: 0; }
     }
     .star-explode {
       animation: starExplosion 0.6s ease-out forwards;
@@ -94,7 +100,7 @@
     }
     .night-mode .card{
       background:linear-gradient(180deg, rgba(30,30,58,0.9), rgba(26,26,52,0.9));
-      box-shadow:0 10px 30px rgba(138,43,226,0.2);
+      box-shadow:0 10px 30px rgba(255,215,0,0.2);
     }
     .header{display:flex;gap:16px;align-items:center}
     .logo{
@@ -103,11 +109,11 @@
       transition: all 0.5s ease;
     }
     .night-mode .logo{
-      background:conic-gradient(from 200deg at 50% 50%, #8a2be2, #6a0dad 30%, #4b0082 60%);
-      box-shadow:0 6px 18px rgba(138,43,226,0.3);
+      background:conic-gradient(from 200deg at 50% 50%, #ffd700, #ffed4e 30%, #ffdb58 60%);
+      box-shadow:0 6px 18px rgba(255,215,0,0.3);
     }
     .logo svg{width:48px;height:48px;filter:drop-shadow(0 6px 10px rgba(255,110,150,0.12))}
-    .night-mode .logo svg{filter:drop-shadow(0 6px 10px rgba(138,43,226,0.3))}
+    .night-mode .logo svg{filter:drop-shadow(0 6px 10px rgba(255,215,0,0.3))}
     h1{font-size:1.6rem;margin:0}
     p.lead{margin:8px 0 0;color:var(--text)}
 
@@ -123,8 +129,8 @@
     }
     .night-mode .section {
       background: rgba(30,30,58,0.95);
-      box-shadow: 0 5px 20px rgba(138,43,226,0.2);
-      border: 2px dashed rgba(138,43,226,0.4);
+      box-shadow: 0 5px 20px rgba(255,215,0,0.2);
+      border: 2px dashed rgba(255,215,0,0.4);
     }
 
     footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
@@ -168,7 +174,8 @@
       transition: all 0.5s ease;
     }
     .night-mode .generate-compliment {
-      background: linear-gradient(90deg,#8a2be2,#6a0dad);
+      background: linear-gradient(90deg,#ffd700,#ffed4e);
+      color: #0a0a2a;
     }
 
     /* Важные даты */
@@ -196,7 +203,7 @@
       transition: all 0.5s ease;
     }
     .night-mode .calendar-date {
-      border-bottom: 1px solid rgba(138,43,226,0.3);
+      border-bottom: 1px solid rgba(255,215,0,0.3);
     }
     
     .calendar-date:last-child {
@@ -289,7 +296,7 @@
     }
     .night-mode .planning-form input {
       background: #2a2a4a;
-      border: 2px solid rgba(138,43,226,0.3);
+      border: 2px solid rgba(255,215,0,0.3);
       color: #e6e6ff;
     }
     
@@ -300,6 +307,9 @@
       padding: 10px;
       border-radius: 8px;
       cursor: pointer;
+    }
+    .night-mode .planning-form button {
+      color: #0a0a2a;
     }
     
     .plans-list {
@@ -357,7 +367,8 @@
       justify-content: center;
     }
     .night-mode .delete-btn {
-      background: linear-gradient(90deg,#8a2be2,#6a0dad);
+      background: linear-gradient(90deg,#ffd700,#ffed4e);
+      color: #0a0a2a;
     }
 
     /* Счетчик дней */
@@ -377,7 +388,7 @@
       animation: pulse 2s ease-in-out infinite;
     }
     .night-mode .days-counter {
-      background: linear-gradient(135deg, #8a2be2, #b19cd9);
+      background: linear-gradient(135deg, #ffd700, #ffed4e);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
@@ -413,7 +424,7 @@
     }
     .night-mode .theme-toggle {
       background: rgba(30,30,58,0.9);
-      box-shadow: 0 4px 15px rgba(138,43,226,0.3);
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
     }
 
     /* Счетчики */
@@ -443,12 +454,12 @@
       background: rgba(30,30,58,0.9);
       padding: 10px 20px;
       border-radius: 25px;
-      box-shadow: 0 4px 15px rgba(138,43,226,0.3);
+      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
       z-index: 1000;
       font-weight: 600;
-      color: #8a2be2;
+      color: #ffd700;
       backdrop-filter: blur(10px);
-      border: 2px solid #8a2be2;
+      border: 2px solid #ffd700;
       transition: all 0.5s ease;
       display: none;
     }
@@ -475,7 +486,7 @@
       border-radius: 4px;
     }
     .night-mode .plans-list::-webkit-scrollbar-track {
-      background: rgba(138,43,226,0.2);
+      background: rgba(255,215,0,0.2);
     }
 
     @media (max-width:520px){
@@ -641,13 +652,13 @@
                 position: fixed;
                 width: 6px;
                 height: 6px;
-                background: #fff;
+                background: #ffd700;
                 border-radius: 50%;
                 left: ${rect.left + rect.width/2}px;
                 top: ${rect.top + rect.height/2}px;
                 pointer-events: none;
                 z-index: 1000;
-                box-shadow: 0 0 8px #fff, 0 0 12px #8a2be2;
+                box-shadow: 0 0 8px #ffd700;
             `;
             
             const angle = (i / particleCount) * Math.PI * 2;
@@ -713,14 +724,9 @@
       const el = document.createElement('i');
       const left = Math.random() * 100; 
       const top = -10 - Math.random()*30;
-      const size = 6 + Math.random() * 4; // Увеличили размер звезд
-      const brightness = 0.6 + Math.random() * 0.4;
       
       el.style.left = left + 'vw'; 
       el.style.top = top + 'vh';
-      el.style.width = size + 'px';
-      el.style.height = size + 'px';
-      el.style.opacity = brightness;
       
       const dur = 15 + Math.random()*20;
       el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
