@@ -129,35 +129,60 @@
       margin: 10px;
     }
 
-    /* Новые функции */
-    .relationship-calendar {
+    /* Комплименты */
+    .compliment-generator {
+      text-align: center;
+    }
+
+    .compliment-box {
+      background: linear-gradient(135deg, #fff0f5, #ffe6f2);
+      border-radius: 15px;
+      padding: 15px;
+      margin: 10px 0;
+      border: 2px solid var(--accent);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1rem;
+      font-weight: 600;
+      color: #5b3f47;
+    }
+
+    .generate-compliment {
+      background: linear-gradient(90deg,#ff7aa3,#ff5480);
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 0.9rem;
+      margin-bottom: 5px;
+    }
+
+    /* Важные даты */
+    .dates-section {
       position: relative;
     }
     
-    .relationship-calendar h3 {
-      position: absolute;
-      top: -15px;
-      left: 50%;
-      transform: translateX(-50%);
-      background: linear-gradient(135deg, var(--bg1), var(--bg2));
-      padding: 5px 20px;
-      border-radius: 10px;
-      margin: 0;
-      border: 2px solid var(--accent);
-      white-space: nowrap;
-      z-index: 2;
+    .dates-section h3 {
+      margin: 0 0 15px 0;
+      text-align: center;
+      color: var(--accent);
     }
     
     .calendar-dates-container {
-      margin-top: 10px;
+      margin-top: 0;
     }
     
     .calendar-date {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      padding: 8px 0;
+      align-items: flex-start;
+      padding: 10px 0;
       border-bottom: 1px solid rgba(255,200,220,0.5);
+      margin: 0;
     }
     
     .calendar-date:last-child {
@@ -168,49 +193,27 @@
       font-weight: 600;
       color: var(--accent);
       flex: 1;
-      margin-right: 10px;
+      margin-right: 15px;
+      line-height: 1.4;
     }
     
     .date-days {
       color: #888;
       font-size: 0.9rem;
       white-space: nowrap;
+      text-align: right;
+      min-width: 120px;
     }
 
-    .compliment-generator {
-  text-align: center;
-  margin: 10px 0;
-}
-
-.compliment-box {
-  background: linear-gradient(135deg, #fff0f5, #ffe6f2);
-  border-radius: 15px;
-  padding: 12px;
-  margin: 8px 0;
-  border: 2px solid var(--accent);
-  min-height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #5b3f47;
-}
-
-.generate-compliment {
-  background: linear-gradient(90deg,#ff7aa3,#ff5480);
-  color: white;
-  border: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  cursor: pointer;
-  font-weight: 600;
-  font-size: 0.85rem;
-  margin-bottom: 5px;
-}
-
+    /* Достижения */
     .achievements-system {
-      margin: 20px 0;
+      margin: 0;
+    }
+    
+    .achievements-system h3 {
+      margin: 0 0 15px 0;
+      text-align: center;
+      color: var(--accent);
     }
     
     .achievement {
@@ -237,11 +240,15 @@
       flex: 1;
     }
 
+    /* Планировщик */
     .planning-calendar {
-      background: rgba(255,255,255,0.95);
-      border-radius: 15px;
-      padding: 20px;
-      margin: 15px 0;
+      margin: 0;
+    }
+    
+    .planning-calendar h3 {
+      margin: 0 0 15px 0;
+      text-align: center;
+      color: var(--accent);
     }
     
     .planning-form {
@@ -363,14 +370,6 @@
       .planning-form {
         grid-template-columns: 1fr;
       }
-      .relationship-calendar h3 {
-        position: static;
-        margin-bottom: 15px;
-        text-align: center;
-      }
-      .calendar-dates-container {
-        margin-top: 0;
-      }
       .calendar-date {
         flex-direction: column;
         align-items: flex-start;
@@ -378,6 +377,10 @@
       }
       .date-event {
         margin-right: 0;
+      }
+      .date-days {
+        text-align: left;
+        min-width: auto;
       }
     }
   </style>
@@ -449,9 +452,10 @@
       </div>
     </div>
 
-    <!-- Секция 2: Комплименты, даты и достижения -->
+    <!-- Секция 2: Генератор комплиментов -->
     <div class="section">
       <div class="compliment-generator">
+        <h3>💝 Генератор комплиментов</h3>
         <button class="generate-compliment" id="generateCompliment">
           Получить комплимент ✨
         </button>
@@ -459,14 +463,18 @@
           Здесь таится моя любовь 💝
         </div>
       </div>
+    </div>
 
-      <div class="relationship-calendar">
-        <h3>📅 Наши важные даты</h3>
-        <div class="calendar-dates-container" id="calendarDates">
-          <!-- Даты будут добавлены через JavaScript -->
-        </div>
+    <!-- Секция 3: Важные даты -->
+    <div class="section dates-section">
+      <h3>📅 Наши важные даты</h3>
+      <div class="calendar-dates-container" id="calendarDates">
+        <!-- Даты будут добавлены через JavaScript -->
       </div>
+    </div>
 
+    <!-- Секция 4: Достижения -->
+    <div class="section">
       <div class="achievements-system">
         <h3>🏆 Наши достижения</h3>
         <div id="achievementsList">
@@ -475,7 +483,7 @@
       </div>
     </div>
 
-    <!-- Секция 3: Планировщик -->
+    <!-- Секция 5: Планировщик -->
     <div class="section">
       <div class="planning-calendar">
         <h3>📝 Планируем вместе</h3>
