@@ -61,12 +61,15 @@
       border: 2px dashed rgba(255,92,138,0.3);
     }
 
-    .question-section {
-      background:linear-gradient(180deg, rgba(255,245,247,0.9), rgba(255,240,244,0.8));
-      border:1px solid rgba(255,200,220,0.6);
+    /* Кнопки Да/Нет без рамки */
+    .buttons-section {
+      background: transparent;
+      border: none;
+      box-shadow: none;
+      padding: 0;
+      margin: 20px 0 15px 0;
     }
 
-    .q-text{font-size:1.25rem;margin:0 0 16px}
     .buttons{display:flex;gap:12px;align-items:center}
     button{cursor:pointer;border:0;padding:12px 18px;border-radius:12px;font-weight:600}
     .yes{background:linear-gradient(90deg,#ff7aa3,#ff5480);color:white;box-shadow:0 8px 18px rgba(255,100,140,0.18)}
@@ -396,63 +399,62 @@
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" fill="#fff" opacity="0.12"/><path d="M12 21s-6.5-4.35-9-7.1C-0.5 9.5 3 4 7.5 5.5 10 6.5 12 9 12 9s2-2.5 4.5-3.5C21 4 24.5 9.5 21 13.9 18.5 16.65 12 21 12 21z" stroke="#fff" stroke-width="0.6" fill="transparent"/></svg>
       </div>
       <div>
-        <h1>Моя любовь</h1>
-        <p class="lead">Выбирай правильный ответ, чтобы вспомнить нашу историю 😉</p>
+        <h1>Моё солнце!</h1>
+        <p class="lead">Это страничка нашей истории любви</p>
       </div>
     </div>
 
-    <!-- Секция 1: Кнопки и спойлеры -->
-    <div class="section question-section">
-      <p class="q-text">Ты меня любишь?</p>
+    <!-- Кнопки Да/Нет без рамки -->
+    <div class="buttons-section">
       <div class="buttons" style="position:relative">
         <button class="yes" id="yesBtn">Да, очень ❤️</button>
         <button class="no" id="noBtn" aria-label="Нет">Нет</button>
       </div>
+    </div>
 
-      <!-- Контейнер для спойлеров -->
-      <div class="spoilers-container">
-        <div class="spoilers" id="spoilers">
-          <div class="spoiler" id="s1">
-            <button class="close-spoiler">×</button>
-            <h3>Наша первая встреча</h3>
-            <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
-            <button class="continue">Продолжить</button>
+    <!-- Контейнер для спойлеров -->
+    <div class="spoilers-container">
+      <div class="spoilers" id="spoilers">
+        <div class="spoiler" id="s1">
+          <button class="close-spoiler">×</button>
+          <h3>Наша первая встреча</h3>
+          <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
+          <button class="continue">Продолжить</button>
+        </div>
+
+        <div class="spoiler" id="s2">
+          <button class="close-spoiler">×</button>
+          <h3>Память</h3>
+          <p>Это я смотрю на своё счастье</p>
+          <div class="polaroid">
+            <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
           </div>
+          <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
+          <button class="continue">Продолжить</button>
+        </div>
 
-          <div class="spoiler" id="s2">
-            <button class="close-spoiler">×</button>
-            <h3>Память</h3>
-            <p>Это я смотрю на своё счастье</p>
+        <div class="spoiler" id="s3">
+          <button class="close-spoiler">×</button>
+          <h3>Сюрприз</h3>
+          <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
+          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
+          <button class="continue">Продолжить</button>
+        </div>
+
+        <div class="spoiler" id="s4">
+          <button class="close-spoiler">×</button>
+          <details>
+            <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
             <div class="polaroid">
-              <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
+              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
             </div>
-            <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
-            <button class="continue">Продолжить</button>
-          </div>
-
-          <div class="spoiler" id="s3">
-            <button class="close-spoiler">×</button>
-            <h3>Сюрприз</h3>
-            <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
-            <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
-            <button class="continue">Продолжить</button>
-          </div>
-
-          <div class="spoiler" id="s4">
-            <button class="close-spoiler">×</button>
-            <details>
-              <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
-              <div class="polaroid">
-                <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
-              </div>
-            </details>
-            <button class="continue">Продолжить</button>
-          </div>
+          </details>
+          <button class="continue">Продолжить</button>
         </div>
       </div>
     </div>
 
-    <!-- Секция 2: Генератор комплиментов -->
+    <!-- Секция 1: Генератор комплиментов -->
     <div class="section">
       <div class="compliment-generator">
         <h3>💝 Генератор комплиментов</h3>
@@ -465,7 +467,7 @@
       </div>
     </div>
 
-    <!-- Секция 3: Важные даты -->
+    <!-- Секция 2: Важные даты -->
     <div class="section dates-section">
       <h3>📅 Наши важные даты</h3>
       <div class="calendar-dates-container" id="calendarDates">
@@ -473,7 +475,7 @@
       </div>
     </div>
 
-    <!-- Секция 4: Достижения -->
+    <!-- Секция 3: Достижения -->
     <div class="section">
       <div class="achievements-system">
         <h3>🏆 Наши достижения</h3>
@@ -483,7 +485,7 @@
       </div>
     </div>
 
-    <!-- Секция 5: Планировщик -->
+    <!-- Секция 4: Планировщик -->
     <div class="section">
       <div class="planning-calendar">
         <h3>📝 Планируем вместе</h3>
@@ -752,106 +754,4 @@ function getDaysText(days) {
   const achievementsContainer = document.getElementById('achievementsList');
   achievementsContainer.innerHTML = '';
   
-  achievements.forEach(achievement => {
-    const isUnlocked = daysTogether >= achievement.days;
-    const achievementElement = document.createElement('div');
-    achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
-    achievementElement.innerHTML = `
-      <div class="achievement-icon">${achievement.icon}</div>
-      <div class="achievement-text">
-        <div class="achievement-desc">${achievement.desc}</div>
-      </div>
-      <div>${achievement.days} ${getDaysText(achievement.days)}</div>
-    `;
-    achievementsContainer.appendChild(achievementElement);
-  });
-  
-  // Показываем текущий счетчик дней
-  const daysCounter = document.createElement('div');
-  daysCounter.style.cssText = 'text-align: center; margin-top: 15px; font-weight: 600; color: var(--accent);';
-  daysCounter.textContent = `Мы вместе уже ${daysTogether} ${getDaysText(daysTogether)}! 💕`;
-  achievementsContainer.appendChild(daysCounter);
-}
-
-    // Календарь планирования
-    let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
-    let editingIndex = null;
-
-    function renderPlans() {
-      const plansContainer = document.getElementById('plansList');
-      plansContainer.innerHTML = '';
-      
-      plans.forEach((plan, index) => {
-        const planElement = document.createElement('div');
-        planElement.className = 'plan-item';
-        const displayTime = plan.time ? ` в ${plan.time}` : '';
-        const formattedDate = formatDate(plan.date);
-        planElement.innerHTML = `
-          <div>
-            <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
-          </div>
-          <div class="plan-actions">
-            <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
-            <button class="delete-btn" onclick="removePlan(${index})">×</button>
-          </div>
-        `;
-        plansContainer.appendChild(planElement);
-      });
-    }
-
-    function addPlan() {
-      const title = document.getElementById('planTitle').value;
-      const date = document.getElementById('planDate').value;
-      const time = document.getElementById('planTime').value;
-      
-      if (title && date) {
-        if (editingIndex !== null) {
-          // Редактируем существующее событие
-          plans[editingIndex] = { title, date, time };
-          editingIndex = null;
-          document.getElementById('addPlan').textContent = 'Добавить событие';
-        } else {
-          // Добавляем новое событие
-          plans.push({ title, date, time });
-        }
-        
-        localStorage.setItem('ourPlans', JSON.stringify(plans));
-        renderPlans();
-        document.getElementById('planTitle').value = '';
-        document.getElementById('planDate').value = '';
-        document.getElementById('planTime').value = '';
-      }
-    }
-
-    function editPlan(index) {
-      const plan = plans[index];
-      document.getElementById('planTitle').value = plan.title;
-      document.getElementById('planDate').value = plan.date;
-      document.getElementById('planTime').value = plan.time || '';
-      editingIndex = index;
-      document.getElementById('addPlan').textContent = 'Сохранить изменения';
-      
-      // Прокручиваем к форме редактирования
-      document.getElementById('planTitle').scrollIntoView({behavior: 'smooth'});
-    }
-
-    function removePlan(index) {
-      plans.splice(index, 1);
-      localStorage.setItem('ourPlans', JSON.stringify(plans));
-      renderPlans();
-    }
-
-    document.getElementById('addPlan').addEventListener('click', addPlan);
-
-    // Инициализация
-    document.addEventListener('DOMContentLoaded', function() {
-      renderCalendar();
-      renderAchievements();
-      renderPlans();
-    });
-
-    // Initialize some hearts on load
-    for(let i=0;i<10;i++) makeHeart();
-  </script>
-</body>
-</html>
+  achievements.forEach
