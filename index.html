@@ -966,8 +966,7 @@
     }
 
     // Календарь планирования
-    let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
-    let editingIndex = null;
+    let plans = [];    let editingIndex = null;
 
     function renderPlans() {
       const plansContainer = document.getElementById('plansList');
@@ -992,28 +991,29 @@
     }
 
     function addPlan() {
-      const title = document.getElementById('planTitle').value;
-      const date = document.getElementById('planDate').value;
-      const time = document.getElementById('planTime').value;
-      
-      if (title && date) {
-        if (editingIndex !== null) {
-          // Редактируем существующее событие
-          plans[editingIndex] = { title, date, time };
-          editingIndex = null;
-          document.getElementById('addPlan').textContent = 'Добавить событие';
-        } else {
-          // Добавляем новое событие
-          plans.push({ title, date, time });
-        }
-        
-        localStorage.setItem('ourPlans', JSON.stringify(plans));
-        renderPlans();
-        document.getElementById('planTitle').value = '';
-        document.getElementById('planDate').value = '';
-        document.getElementById('planTime').value = '';
-      }
+  const title = document.getElementById('planTitle').value.trim();
+  const date = document.getElementById('planDate').value;
+  const time = document.getElementById('planTime').value;
+  
+  if (title && date) {
+    if (editingIndex !== null) {
+      plans[editingIndex] = { title, date, time };
+      editingIndex = null;
+      document.getElementById('addPlan').textContent = 'Добавить событие';
+    } else {
+      plans.push({ title, date, time });
     }
+    
+    // СОХРАНЯЕМ В FIREBASE вместо localStorage
+    savePlansToFirebase();
+    
+    document.getElementById('planTitle').value = '';
+    document.getElementById('planDate').value = '';
+    document.getElementById('planTime').value = '';
+  } else {
+    alert('Пожалуйста, заполните название и дату события');
+  }
+}
 
     function editPlan(index) {
       const plan = plans[index];
@@ -1028,19 +1028,52 @@
     }
 
     function removePlan(index) {
-      plans.splice(index, 1);
-      localStorage.setItem('ourPlans', JSON.stringify(plans));
+  if (confirm('Удалить это событие?')) {
+    plans.splice(index, 1);
+    savePlansToFirebase(); // Сохраняем в Firebase
+  }
+}
+    // Загрузка планов из Firebase
+function loadPlansFromFirebase() {
+  const plansRef = database.ref('plans');
+  plansRef.on('value', (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      plans = Object.values(data);
+      renderPlans();
+    } else {
+      plans = [];
       renderPlans();
     }
+  });
+}
+
+// Сохранение планов в Firebase
+function savePlansToFirebase() {
+  const plansRef = database.ref('plans');
+  
+  const plansObject = {};
+  plans.forEach((plan, index) => {
+    plansObject[index] = plan;
+  });
+  
+  plansRef.set(plansObject)
+    .then(() => {
+      console.log('Планы успешно сохранены в Firebase');
+    })
+    .catch((error) => {
+      console.error('Ошибка сохранения планов:', error);
+    });
+}
 
     document.getElementById('addPlan').addEventListener('click', addPlan);
 
     // Инициализация
     document.addEventListener('DOMContentLoaded', function() {
-      updateDaysCounter();
-      renderCalendar();
-      renderAchievements();
-      renderPlans();
+    updateDaysCounter();
+    renderCalendar();
+    renderAchievements();
+    loadPlansFromFirebase();
       
       // Запускаем анимации
       startHearts();
@@ -1051,6 +1084,8 @@
       
       // Обновляем счетчик дней каждый день
       setInterval(updateDaysCounter, 24 * 60 * 60 * 1000);
+      window.editPlan = editPlan;
+      window.removePlan = removePlan;
     });
   </script>
 </body>
