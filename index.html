@@ -61,76 +61,7 @@
       border: 2px dashed rgba(255,92,138,0.3);
     }
 
-    /* Кнопки Да/Нет без рамки */
-    .buttons-section {
-      background: transparent;
-      border: none;
-      box-shadow: none;
-      padding: 0;
-      margin: 20px 0 15px 0;
-    }
-
-    .buttons{display:flex;gap:12px;align-items:center}
-    button{cursor:pointer;border:0;padding:12px 18px;border-radius:12px;font-weight:600}
-    .yes{background:linear-gradient(90deg,#ff7aa3,#ff5480);color:white;box-shadow:0 8px 18px rgba(255,100,140,0.18)}
-    .no{background:#fff;border:2px solid var(--accent);min-width:84px;transition:transform 0.35s ease, left 0.35s ease, top 0.35s ease;}
-
-    /* reveal spoilers */
-    .spoilers-container {
-      margin-top: 15px;
-    }
-    .spoilers{display:grid;gap:10px}
-    .spoiler{background:#fff;border-radius:12px;padding:14px;border:1px dashed rgba(200,150,170,0.12);overflow:hidden;max-height:0;opacity:0;transition:max-height 450ms ease,opacity 350ms ease,padding 350ms; position: relative;}
-    .spoiler.open{max-height:600px;opacity:1;padding:14px;overflow-y:auto}
-    .spoiler h3{margin:0 0 6px}
-    .continue{display:inline-block;margin-top:8px;padding:8px 12px;border-radius:10px;background:linear-gradient(90deg,#ffd6e7,#ffb0d0);font-weight:700}
-
-    /* Кнопка закрытия спойлера */
-    .close-spoiler {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      background: #ff6b6b;
-      color: white;
-      border: none;
-      border-radius: 50%;
-      width: 25px;
-      height: 25px;
-      cursor: pointer;
-      font-size: 14px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
     footer{margin-top:18px;color:#774;opacity:0.9;font-size:0.9rem}
-
-    /* playful little cursor-chase for NO */
-.no.chase {
-    position: fixed;
-    z-index: 1000;
-    margin: 0;
-}
-
-    /* Image styling */
-    .spoiler img {
-      max-width: 100%;
-      height: auto;
-      border-radius: 8px;
-      margin-top: 10px;
-      display: block;
-    }
-
-    /* Polaroid effect */
-    .polaroid {
-      background: white;
-      padding: 15px 15px 30px;
-      border-radius: 2px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transform: rotate(1deg);
-      display: inline-block;
-      margin: 10px;
-    }
 
     /* Комплименты */
     .compliment-generator {
@@ -328,16 +259,13 @@
     }
 
     /* Custom scrollbars */
-    .spoiler.open::-webkit-scrollbar,
     .plans-list::-webkit-scrollbar {
       width: 8px;
     }
-    .spoiler.open::-webkit-scrollbar-track,
     .plans-list::-webkit-scrollbar-track {
       background: rgba(255, 220, 230, 0.3);
       border-radius: 4px;
     }
-    .spoiler.open::-webkit-scrollbar-thumb,
     .plans-list::-webkit-scrollbar-thumb {
       background: var(--accent);
       border-radius: 4px;
@@ -366,10 +294,6 @@
       .header{gap:10px}
       .logo{width:60px;height:60px}
       .card{padding:18px}
-      .buttons{flex-direction:column;align-items:stretch}
-      .no{order:2;margin-top:10px}
-      .yes{order:1}
-      .spoiler.open{max-height:400px}
       .planning-form {
         grid-template-columns: 1fr;
       }
@@ -401,56 +325,6 @@
       <div>
         <h1>Моё солнце!</h1>
         <p class="lead">Это страничка нашей истории любви</p>
-      </div>
-    </div>
-
-    <!-- Кнопки Да/Нет без рамки -->
-    <div class="buttons-section">
-      <div class="buttons" style="position:relative">
-        <button class="yes" id="yesBtn">Да, очень ❤️</button>
-        <button class="no" id="noBtn" aria-label="Нет">Нет</button>
-      </div>
-    </div>
-
-    <!-- Контейнер для спойлеров -->
-    <div class="spoilers-container">
-      <div class="spoilers" id="spoilers">
-        <div class="spoiler" id="s1">
-          <button class="close-spoiler">×</button>
-          <h3>Наша первая встреча</h3>
-          <p>Помнишь нашу первую совместную встречу? Ты была такой скромной, я ещё не подозревал, что попал в самый прекрасный сон, ставший явью</p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s2">
-          <button class="close-spoiler">×</button>
-          <h3>Память</h3>
-          <p>Это я смотрю на своё счастье</p>
-          <div class="polaroid">
-            <img src="https://lh3.googleusercontent.com/pw/AP1GczMfrh72GbJYIkj8nrrTeZUdXI15Asao0MpLcgWndkA49KE57vHnfy1d5a3CPNZiiHoG0DHwTVrqrPtKo1J6YZfE5AE2FAbmCk2Ob9ZHu9q8kE12Bu0g5Zf9v6ai731exp0BdVZYh1M-PT-pi0O0fqbh=w714-h953-s-no-gm?authuser=0" width="238" height="317" alt="Это я смотрю на своё счастье" />
-          </div>
-          <p>Каждый раз, когда я смотрю на наши фотографии, я вспоминаю что люблю самую красивую девушку в мире. Не могу оторвать глаз от тебя! </p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s3">
-          <button class="close-spoiler">×</button>
-          <h3>Сюрприз</h3>
-          <p>Мы наконец-то пойдём в гончарную мастерскую, я впервые увижу твой талант своими глазами. Будем лепить вместе, как в фильме Привидение ❤️</p>
-          <p>Я так жду нашего следующего свидания в гончарной мастерской!</p>
-          <button class="continue">Продолжить</button>
-        </div>
-
-        <div class="spoiler" id="s4">
-          <button class="close-spoiler">×</button>
-          <details>
-            <summary>А здесь мы счастливые в Дагестане, никогда не забуду те дни. Ты - украшение моей жизни.</summary>
-            <div class="polaroid">
-              <img src="https://lh3.googleusercontent.com/pw/AP1GczPGFy7OKu_zpflxacqHLKRkXzkbxYGYpzce3W7x9R9O5btxAXONFeBUAddFslHXUBsUJM2aA7c9hzIjwNfS2A0zk8ojjwj_T-9GGRvKliXppNfk1gcZgkZvDyZbD6cf_Z4XHClDRIhjgpHKSh8AD8K0=w715-h953-s-no-gm?authuser=0" width="238" height="317" alt="Мы счастливые в Дагестане" />
-            </div>
-          </details>
-          <button class="continue">Продолжить</button>
-        </div>
       </div>
     </div>
 
@@ -501,7 +375,7 @@
       </div>
     </div>
 
-    <footer>Пробовала ловить "Нет"? Эта тварь неуловима</footer>
+    <footer>С любовью для тебя ❤️</footer>
   </div>
 
   <script>
@@ -580,78 +454,6 @@ setTimeout(() => {
     
     // spawn hearts occasionally
     setInterval(()=>{ for(let i=0;i<4;i++) makeHeart(); }, 800);
-
-    // playful NO button - ИСПРАВЛЕННАЯ ВЕРСИЯ
-    const noBtn = document.getElementById('noBtn');
-    const yesBtn = document.getElementById('yesBtn');
-
-    function moveNo(){
-        const rect = noBtn.getBoundingClientRect();
-        const vw = window.innerWidth;
-        const vh = window.innerHeight;
-        const btnWidth = rect.width;
-        const btnHeight = rect.height;
-        
-        // Ограничиваем координаты с учетом размеров кнопки
-        const maxX = vw - btnWidth - 10;
-        const maxY = vh - btnHeight - 10;
-        
-        // Генерируем случайные координаты в пределах видимой области
-        const x = Math.max(10, Math.min(maxX, Math.random() * maxX));
-        const y = Math.max(10, Math.min(maxY, Math.random() * maxY));
-        
-        noBtn.style.position = 'fixed';
-        noBtn.style.left = x + 'px';
-        noBtn.style.top = y + 'px';
-        noBtn.style.zIndex = '1000';
-        noBtn.classList.add('chase');
-    }
-
-    noBtn.addEventListener('mouseenter', moveNo);
-    noBtn.addEventListener('focus', moveNo);
-
-    noBtn.addEventListener('click', (e)=>{
-        e.preventDefault();
-        alert('Ох, как же так — даже кнопка не устояла 😉');
-    });
-
-    // reveal spoilers sequentially when user clicks YES
-    const spoilers = Array.from(document.querySelectorAll('.spoiler'));
-    let revealed = 0;
-    function revealNext(){
-      if(revealed < spoilers.length){
-        spoilers[revealed].classList.add('open');
-        // Плавная прокрутка к открытому спойлеру
-        spoilers[revealed].scrollIntoView({behavior:'smooth', block:'nearest'});
-        revealed++;
-      } else {
-        // final little celebration
-        const conf = document.createElement('div');
-        conf.style.position = 'fixed'; conf.style.inset='0'; conf.style.display='flex';conf.style.alignItems='center';conf.style.justifyContent='center';conf.style.zIndex=9999;
-        conf.innerHTML = `<div style="background:rgba(255,255,255,0.9);padding:28px;border-radius:18px;box-shadow:0 12px 30px rgba(130,40,70,0.12);text-align:center;max-width:90vw;">
-          <h2>Пока что ты всё открыла ✨</h2>
-          <p>Моей любимой девочке посвящается</p>
-          <button style='margin-top:12px;padding:10px 14px;border-radius:12px;background:linear-gradient(90deg,#ff8bb0,#ff5c8a);color:white;border:0;font-weight:700' onclick="this.parentElement.parentElement.remove()">Закрыть</button>
-        </div>`;
-        document.body.appendChild(conf);
-      }
-    }
-    yesBtn.addEventListener('click', revealNext);
-
-    // continue buttons inside spoilers also reveal next
-    document.querySelectorAll('.continue').forEach(b=>b.addEventListener('click',()=>revealNext()));
-
-    // Закрытие спойлеров
-    document.querySelectorAll('.close-spoiler').forEach(btn => {
-      btn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        const spoiler = this.closest('.spoiler');
-        spoiler.classList.remove('open');
-        spoiler.style.maxHeight = '0';
-        spoiler.style.opacity = '0';
-        spoiler.style.padding = '0 14px';
-      });
-    });
 
     // НОВЫЕ ФУНКЦИИ
     // Генератор комплиментов
