@@ -4,11 +4,6 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>lovealina</title>
-  
-  <!-- Добавляем Firebase -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.1/firebase-firestore-compat.js"></script>
-  
   <style>
     :root{--bg1:#ffedf0;--bg2:#ffe6f2;--card:#fff;--accent:#ff5c8a;--text:#3b2a33}
     .night-mode{--bg1:#0a0a2a;--bg2:#0a0a2a;--card:#1e1e3a;--accent:#ffd700;--text:#e6e6ff}
@@ -379,17 +374,17 @@
     /* Счетчик дней */
     .days-counter-section {
       text-align: center;
-      padding: 20px 15px;
+      padding: 30px 20px;
     }
     
     .days-counter {
-      font-size: 3rem;
+      font-size: 3.5rem;
       font-weight: 800;
       background: linear-gradient(135deg, #ff6b95, #ff8eb4);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      margin: 5px 0;
+      margin: 10px 0;
       animation: pulse 2s ease-in-out infinite;
     }
     .night-mode .days-counter {
@@ -400,7 +395,7 @@
     }
     
     .days-text {
-      font-size: 1.1rem;
+      font-size: 1.2rem;
       color: var(--text);
       font-weight: 600;
     }
@@ -478,40 +473,6 @@
       font-weight: 700;
     }
 
-    /* Индикатор синхронизации */
-    .sync-indicator {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      background: rgba(255,255,255,0.9);
-      padding: 8px 15px;
-      border-radius: 20px;
-      box-shadow: 0 4px 15px rgba(255,92,138,0.3);
-      z-index: 1000;
-      font-weight: 600;
-      color: var(--accent);
-      backdrop-filter: blur(10px);
-      border: 2px solid var(--accent);
-      font-size: 0.8rem;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      transition: all 0.5s ease;
-    }
-    .night-mode .sync-indicator {
-      background: rgba(30,30,58,0.9);
-      box-shadow: 0 4px 15px rgba(255,215,0,0.3);
-    }
-    
-    .sync-indicator.syncing {
-      animation: pulse 1.5s infinite;
-    }
-    
-    .sync-indicator.error {
-      background: rgba(255,100,100,0.9);
-      color: white;
-    }
-
     /* Custom scrollbars */
     .plans-list::-webkit-scrollbar {
       width: 8px;
@@ -549,7 +510,7 @@
         min-width: auto;
       }
       .days-counter {
-        font-size: 2.2rem;
+        font-size: 2.5rem;
       }
       .theme-toggle {
         top: 10px;
@@ -560,12 +521,6 @@
         top: 10px;
         right: 10px;
         padding: 8px 16px;
-      }
-      .sync-indicator {
-        bottom: 10px;
-        right: 10px;
-        padding: 6px 12px;
-        font-size: 0.7rem;
       }
     }
   </style>
@@ -580,10 +535,6 @@
   <div class="star-counter">
     ⭐ <span id="starCount">0</span>
   </div>
-  <div class="sync-indicator" id="syncIndicator">
-    <span id="syncStatus">🔄 Загрузка...</span>
-  </div>
-  
   <div class="card" role="main">
     <div class="header">
       <div class="logo" aria-hidden="true">
@@ -653,150 +604,355 @@
   </div>
 
   <script>
-    // Конфигурация Firebase - ЗАМЕНИТЕ на свою конфигурацию
-    const firebaseConfig = {
-      apiKey: "YOUR_API_KEY",
-      authDomain: "YOUR_PROJECT.firebaseapp.com",
-      projectId: "YOUR_PROJECT_ID",
-      storageBucket: "YOUR_PROJECT.appspot.com",
-      messagingSenderId: "YOUR_SENDER_ID",
-      appId: "YOUR_APP_ID"
-    };
-
-    // Инициализация Firebase
-    let db = null;
-    let isFirebaseInitialized = false;
-    
-    try {
-      firebase.initializeApp(firebaseConfig);
-      db = firebase.firestore();
-      isFirebaseInitialized = true;
-      console.log("Firebase инициализирован");
-    } catch (error) {
-      console.error("Ошибка инициализации Firebase:", error);
-      updateSyncStatus("❌ Оффлайн режим", true);
-    }
-
     let heartExplosionCount = 0;
     let starExplosionCount = 0;
     const heartCountElement = document.getElementById('heartCount');
     const starCountElement = document.getElementById('starCount');
     let isNightMode = false;
 
-    // Функции для работы с облачным хранилищем
-    async function savePlansToCloud(plans) {
-      if (!isFirebaseInitialized) {
-        // Если Firebase не инициализирован, сохраняем только в localStorage
-        localStorage.setItem('ourPlans', JSON.stringify(plans));
-        return;
-      }
-      
-      try {
-        updateSyncStatus("🔄 Синхронизация...", false, true);
-        
-        await db.collection('lovealina').doc('plans').set({
-          plans: plans,
-          lastUpdated: firebase.firestore.FieldValue.serverTimestamp()
-        });
-        
-        updateSyncStatus("✅ Синхронизировано", false);
-        
-        // Также сохраняем в localStorage для оффлайн-доступа
-        localStorage.setItem('ourPlans', JSON.stringify(plans));
-      } catch (error) {
-        console.error("Ошибка сохранения в облако:", error);
-        updateSyncStatus("❌ Ошибка синхронизации", true);
-        
-        // Сохраняем в localStorage как запасной вариант
-        localStorage.setItem('ourPlans', JSON.stringify(plans));
-      }
-    }
-
-    async function loadPlansFromCloud() {
-      if (!isFirebaseInitialized) {
-        // Если Firebase не инициализирован, загружаем из localStorage
-        const localPlans = localStorage.getItem('ourPlans');
-        return localPlans ? JSON.parse(localPlans) : [];
-      }
-      
-      try {
-        updateSyncStatus("🔄 Загрузка...", false, true);
-        
-        const doc = await db.collection('lovealina').doc('plans').get();
-        
-        if (doc.exists) {
-          const data = doc.data();
-          updateSyncStatus("✅ Загружено", false);
-          return data.plans || [];
-        } else {
-          updateSyncStatus("✅ Готово", false);
-          return [];
+    // Функция для создания частиц при взрыве сердца
+    function createHeartParticles(rect) {
+        const particleCount = 8;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 6px;
+                height: 6px;
+                background: var(--accent);
+                border-radius: 50%;
+                left: ${rect.left + rect.width/2}px;
+                top: ${rect.top + rect.height/2}px;
+                pointer-events: none;
+                z-index: 1000;
+            `;
+            
+            const angle = (i / particleCount) * Math.PI * 2;
+            const distance = 30 + Math.random() * 40;
+            const duration = 0.8 + Math.random() * 0.4;
+            
+            particle.style.transition = `all ${duration}s ease-out`;
+            document.body.appendChild(particle);
+            
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                particle.style.opacity = '0';
+            });
+            
+            setTimeout(() => particle.remove(), duration * 1000);
         }
-      } catch (error) {
-        console.error("Ошибка загрузки из облака:", error);
-        updateSyncStatus("❌ Оффлайн режим", true);
-        
-        // Загружаем из localStorage как запасной вариант
-        const localPlans = localStorage.getItem('ourPlans');
-        return localPlans ? JSON.parse(localPlans) : [];
-      }
     }
 
-    function updateSyncStatus(message, isError = false, isSyncing = false) {
-      const syncIndicator = document.getElementById('syncIndicator');
-      const syncStatus = document.getElementById('syncStatus');
-      
-      syncStatus.textContent = message;
-      
-      if (isError) {
-        syncIndicator.classList.add('error');
-        syncIndicator.classList.remove('syncing');
-      } else if (isSyncing) {
-        syncIndicator.classList.add('syncing');
-        syncIndicator.classList.remove('error');
-      } else {
-        syncIndicator.classList.remove('error', 'syncing');
-      }
-      
-      // Автоматически скрываем статус через 3 секунды, если не ошибка
-      if (!isError) {
-        setTimeout(() => {
-          syncIndicator.style.opacity = '0.7';
-        }, 3000);
-      } else {
-        syncIndicator.style.opacity = '1';
-      }
+    // Функция для создания частиц при взрыве звезды
+    function createStarParticles(rect) {
+        const particleCount = 12;
+        for (let i = 0; i < particleCount; i++) {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: fixed;
+                width: 6px;
+                height: 6px;
+                background: #ffd700;
+                border-radius: 50%;
+                left: ${rect.left + rect.width/2}px;
+                top: ${rect.top + rect.height/2}px;
+                pointer-events: none;
+                z-index: 1000;
+                box-shadow: 0 0 8px #ffd700;
+            `;
+            
+            const angle = (i / particleCount) * Math.PI * 2;
+            const distance = 40 + Math.random() * 60;
+            const duration = 0.8 + Math.random() * 0.4;
+            
+            particle.style.transition = `all ${duration}s ease-out`;
+            document.body.appendChild(particle);
+            
+            requestAnimationFrame(() => {
+                particle.style.transform = `translate(${Math.cos(angle) * distance}px, ${Math.sin(angle) * distance}px)`;
+                particle.style.opacity = '0';
+            });
+            
+            setTimeout(() => particle.remove(), duration * 1000);
+        }
     }
 
-    // Сохранение счетчиков в localStorage
-    function saveCounters() {
-      const counters = {
-        heartExplosionCount,
-        starExplosionCount
-      };
-      localStorage.setItem('loveCounters', JSON.stringify(counters));
-    }
-
-    function loadCounters() {
-      const savedCounters = localStorage.getItem('loveCounters');
-      if (savedCounters) {
-        const counters = JSON.parse(savedCounters);
-        heartExplosionCount = counters.heartExplosionCount || 0;
-        starExplosionCount = counters.starExplosionCount || 0;
-        
+    // Создание сердечек (только в дневном режиме)
+    const heartsRoot = document.querySelector('.hearts');
+    function makeHeart(i){
+      const el = document.createElement('i');
+      const left = Math.random() * 100; 
+      const top = -10 - Math.random()*30;
+      
+      el.style.left = left + 'vw'; 
+      el.style.top = top + 'vh';
+      
+      const dur = 10 + Math.random()*15;
+      el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
+      heartsRoot.appendChild(el);
+      
+      el.addEventListener('click', function() {
+        this.style.pointerEvents = 'none';
+        this.classList.add('heart-explode');
+        // Увеличиваем счетчик сердечек
+        heartExplosionCount++;
         heartCountElement.textContent = heartExplosionCount;
+
+        // Добавляем анимацию к счетчику
+        heartCountElement.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            heartCountElement.style.transform = 'scale(1)';
+        }, 300);
+        createHeartParticles(this.getBoundingClientRect());
+        setTimeout(() => {
+            if (this.parentElement) {
+                this.parentElement.removeChild(this);
+            }
+        }, 800);
+      });
+      
+      requestAnimationFrame(()=>{
+        el.style.transform = `translateY(${110 + Math.random()*30}vh) scale(${0.8+Math.random()*0.6}) rotate(${(Math.random()-0.5)*60}deg)`;
+        el.style.opacity = 0;
+      });
+      setTimeout(()=>el.remove(), (dur+0.5)*1000);
+    }
+
+    // Создание звезд (только в ночном режиме)
+    const starsRoot = document.querySelector('.stars');
+    function makeStar(i){
+      const el = document.createElement('i');
+      const left = Math.random() * 100; 
+      const top = -10 - Math.random()*30;
+      
+      el.style.left = left + 'vw'; 
+      el.style.top = top + 'vh';
+      
+      const dur = 15 + Math.random()*20;
+      el.style.transition = `transform ${dur}s linear, top ${dur}s linear, opacity ${dur}s linear`;
+      starsRoot.appendChild(el);
+      
+      el.addEventListener('click', function() {
+        this.style.pointerEvents = 'none';
+        this.classList.add('star-explode');
+        // Увеличиваем счетчик звезд
+        starExplosionCount++;
         starCountElement.textContent = starExplosionCount;
+
+        // Добавляем анимацию к счетчику
+        starCountElement.style.transform = 'scale(1.3)';
+        setTimeout(() => {
+            starCountElement.style.transform = 'scale(1)';
+        }, 300);
+        createStarParticles(this.getBoundingClientRect());
+        setTimeout(() => {
+            if (this.parentElement) {
+                this.parentElement.removeChild(this);
+            }
+        }, 800);
+      });
+      
+      requestAnimationFrame(()=>{
+        el.style.transform = `translateY(${120 + Math.random()*40}vh) rotate(${(Math.random()-0.5)*180}deg)`;
+        el.style.opacity = 0;
+      });
+      setTimeout(()=>el.remove(), (dur+0.5)*1000);
+    }
+    
+    // Создание сердечек в дневном режиме
+    function startHearts() {
+      setInterval(()=>{ 
+        if (!isNightMode) {
+          for(let i=0;i<3;i++) makeHeart(); 
+        }
+      }, 800);
+    }
+
+    // Создание звезд в ночном режиме
+    function startStars() {
+      setInterval(()=>{ 
+        if (isNightMode) {
+          for(let i=0;i<2;i++) makeStar(); 
+        }
+      }, 1000);
+    }
+
+    // Переключение ночного режима
+    document.getElementById('themeToggle').addEventListener('click', function() {
+      isNightMode = !isNightMode;
+      document.body.classList.toggle('night-mode', isNightMode);
+      this.textContent = isNightMode ? '☀️' : '🌙';
+      
+      // Очищаем и перезапускаем анимации при переключении режима
+      if (isNightMode) {
+        heartsRoot.innerHTML = '';
+        // Создаем начальные звезды для ночного режима
+        for(let i=0;i<15;i++) makeStar();
+      } else {
+        starsRoot.innerHTML = '';
+        // Создаем начальные сердечки для дневного режима
+        for(let i=0;i<10;i++) makeHeart();
+      }
+    });
+
+    // Счетчик дней вместе
+    function updateDaysCounter() {
+      const startDate = new Date('2023-06-01');
+      const today = new Date();
+      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      
+      const daysCounter = document.getElementById('daysCounter');
+      const daysText = document.getElementById('daysText');
+      
+      daysCounter.textContent = daysTogether;
+      
+      // Красивое отображение текста в зависимости от количества дней
+      const lastDigit = daysTogether % 10;
+      const lastTwoDigits = daysTogether % 100;
+      
+      let dayText = 'дней';
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        dayText = 'дней';
+      } else if (lastDigit === 1) {
+        dayText = 'день';
+      } else if (lastDigit >= 2 && lastDigit <= 4) {
+        dayText = 'дня';
+      }
+      
+      daysText.textContent = `${dayText} счастья!`;
+      
+      // Добавляем дополнительное сообщение для круглых дат
+      if (daysTogether % 100 === 0) {
+        daysText.textContent += ` 🎉 Юбилей!`;
+      } else if (daysTogether % 365 === 0) {
+        const years = daysTogether / 365;
+        daysText.textContent += ` 🎂 ${years} год${years > 1 ? 'а' : ''} вместе!`;
       }
     }
 
-    // Остальной код остается таким же, но с интеграцией облачного хранилища
-    // ... (функции createHeartParticles, createStarParticles, makeHeart, makeStar и т.д.)
+    // НОВЫЕ ФУНКЦИИ
+    // Генератор комплиментов
+    const compliments = [
+      "Ты самое красивое, что случалось в моей жизни! 🌸",
+      "Твоя улыбка делает мой день ярче! ✨",
+      "Я скучаю по тебе каждую секунду! 💫",
+      "Ты вдохновляешь меня становиться лучше! 🚀",
+      "С тобой даже обычный день становится праздником! 🎉",
+      "Твои глаза - моя любимая вселенная! 🌌",
+      "Ты делаешь меня самым счастливым человеком! 😊",
+      "Каждая минута с тобой - подарок судьбы! 🎁",
+      "Твоя доброта согревает мое сердце! 🔥",
+      "Ты идеальна во всем! 💎",
+      "Мое сердце бьется только для тебя! 💓",
+      "Ты моя самая большая мечта! 🌠",
+      "С тобой я чувствую, что могу всё! 💪",
+      "Ты - причина моей улыбки! 😄",
+      "Любовь к тебе делает меня сильнее! 🛡️"
+    ];
 
-    // Календарь планирования с облачной синхронизацией
-    let plans = [];
+    document.getElementById('generateCompliment').addEventListener('click', function() {
+      const randomCompliment = compliments[Math.floor(Math.random() * compliments.length)];
+      document.getElementById('complimentText').textContent = randomCompliment;
+    });
+
+    // Функция для форматирования даты в дд.мм.гггг
+    function formatDate(dateString) {
+      const [year, month, day] = dateString.split('-');
+      return `${day}.${month}.${year}`;
+    }
+
+    // Календарь событий
+    const importantDates = [
+      { date: '2023-06-01', event: '🌱 День, когда наши сердца нашли друг друга', days: 'Первый день' },
+      { date: '2023-06-04', event: '🏰 Иннополис и Свияжск - первые страницы нашей книги', days: '4 дня' },
+      { date: '2023-07-15', event: '🚝 Ижевск стал свидетелем наших чувств', days: '45 дней' },
+      { date: '2024-01-22', event: '🔥 Незабываемый глэмпинг с друзьями', days: '235 дней' },
+      { date: '2024-02-07', event: '❄️ Зимняя Москва заставляла нас улыбаться', days: '251 день' },
+      { date: '2024-03-24', event: '🏡 День, когда "я" и "ты" стали "мы"', days: '297 дней' },
+      { date: '2024-06-01', event: '🎂 365 восходов, которые я встречал с мыслями о тебе', days: '365 дней' },
+      { date: '2024-09-02', event: '⛰️ Кавказские горы склонились перед нашей любовью', days: '459 дней' },
+      { date: '2024-09-23', event: '📦 Первый совместный переезд', days: '480 дней' },
+      { date: '2025-04-16', event: '🔁 Ещё один переезд, но с тобой - это всегда приключение', days: '685 дней' },
+      { date: '2025-05-02', event: '🐾 Появление Эми - пушистое счастье в нашем доме', days: '701 дней' },
+      { date: '2025-05-25', event: '☀️ Утрау! Место, где мы почувствовали себя на своём месте', days: '724 дней' },
+      { date: '2025-06-01', event: '✨ 730 ночей взаимной любви', days: '731 день' },
+      { date: '2025-08-11', event: '🌅 Займище - где дружба и любовь сплелись воедино', days: '802 дня' },
+      { date: '2025-08-28', event: '🌉 Москва-Петербург: два города, одно чувство', days: '819 дней' }
+    ];
+
+    function renderCalendar() {
+      const calendarContainer = document.getElementById('calendarDates');
+      calendarContainer.innerHTML = '';
+      
+      importantDates.forEach(item => {
+        const dateElement = document.createElement('div');
+        dateElement.className = 'calendar-date';
+        dateElement.innerHTML = `
+          <span class="date-event">${item.event}</span>
+          <span class="date-days">${formatDate(item.date)} (${item.days})</span>
+        `;
+        calendarContainer.appendChild(dateElement);
+      });
+    }
+
+    // Система достижений
+    const achievements = [
+      { days: 1, desc: 'Старт великого приключения!', icon: '🌱', unlocked: true },
+      { days: 50, desc: 'Полтора месяца поцелуев и обнимашек', icon: '💝', unlocked: true },
+      { days: 100, desc: 'Сотня дней счастья - только начало!', icon: '🎯', unlocked: true },
+      { days: 365, desc: 'Целый год вместе!', icon: '🎉', unlocked: false },
+      { days: 500, desc: '500 дней - и мы всё ещё на взлёте!', icon: '🚀', unlocked: false },
+      { days: 700, desc: 'Почти 2 года - и с каждым днём всё лучше!', icon: '💫', unlocked: false },
+      { days: 1000, desc: 'Тысяча дней - мы делаем историю?', icon: '🏆', unlocked: false }
+    ];
+
+    function getDaysText(days) {
+      const lastDigit = days % 10;
+      const lastTwoDigits = days % 100;
+      
+      if (lastTwoDigits >= 11 && lastTwoDigits <= 14) {
+        return 'дней';
+      }
+      
+      if (lastDigit === 1) {
+        return 'день';
+      }
+      
+      if (lastDigit >= 2 && lastDigit <= 4) {
+        return 'дня';
+      }
+      
+      return 'дней';
+    }
+
+    function renderAchievements() {
+      const startDate = new Date('2023-06-01');
+      const today = new Date();
+      const daysTogether = Math.floor((today - startDate) / (1000 * 60 * 60 * 24));
+      
+      const achievementsContainer = document.getElementById('achievementsList');
+      achievementsContainer.innerHTML = '';
+      
+      achievements.forEach(achievement => {
+        const isUnlocked = daysTogether >= achievement.days;
+        const achievementElement = document.createElement('div');
+        achievementElement.className = `achievement ${isUnlocked ? 'unlocked' : ''}`;
+        achievementElement.innerHTML = `
+          <div class="achievement-icon">${achievement.icon}</div>
+          <div class="achievement-text">
+            <div class="achievement-desc">${achievement.desc}</div>
+          </div>
+          <div>${achievement.days} ${getDaysText(achievement.days)}</div>
+        `;
+        achievementsContainer.appendChild(achievementElement);
+      });
+    }
+
+    // Календарь планирования
+    let plans = JSON.parse(localStorage.getItem('ourPlans')) || [];
     let editingIndex = null;
 
-    async function renderPlans() {
+    function renderPlans() {
       const plansContainer = document.getElementById('plansList');
       plansContainer.innerHTML = '';
       
@@ -818,7 +974,7 @@
       });
     }
 
-    async function addPlan() {
+    function addPlan() {
       const title = document.getElementById('planTitle').value;
       const date = document.getElementById('planDate').value;
       const time = document.getElementById('planTime').value;
@@ -834,70 +990,51 @@
           plans.push({ title, date, time });
         }
         
-        // Сохраняем в облако и localStorage
-        await savePlansToCloud(plans);
-        await renderPlans();
-        
+        localStorage.setItem('ourPlans', JSON.stringify(plans));
+        renderPlans();
         document.getElementById('planTitle').value = '';
         document.getElementById('planDate').value = '';
         document.getElementById('planTime').value = '';
       }
     }
 
-    async function removePlan(index) {
-      plans.splice(index, 1);
-      await savePlansToCloud(plans);
-      await renderPlans();
+    function editPlan(index) {
+      const plan = plans[index];
+      document.getElementById('planTitle').value = plan.title;
+      document.getElementById('planDate').value = plan.date;
+      document.getElementById('planTime').value = plan.time || '';
+      editingIndex = index;
+      document.getElementById('addPlan').textContent = 'Сохранить изменения';
+      
+      // Прокручиваем к форме редактирования
+      document.getElementById('planTitle').scrollIntoView({behavior: 'smooth'});
     }
 
+    function removePlan(index) {
+      plans.splice(index, 1);
+      localStorage.setItem('ourPlans', JSON.stringify(plans));
+      renderPlans();
+    }
+
+    document.getElementById('addPlan').addEventListener('click', addPlan);
+
     // Инициализация
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Загружаем счетчики из localStorage
-      loadCounters();
-      
-      // Загружаем планы из облака
-      plans = await loadPlansFromCloud();
-      
+    document.addEventListener('DOMContentLoaded', function() {
       updateDaysCounter();
       renderCalendar();
       renderAchievements();
       renderPlans();
       
-      // Остальная инициализация...
+      // Запускаем анимации
       startHearts();
       startStars();
       
+      // Создаем начальные сердечки
       for(let i=0;i<10;i++) makeHeart();
       
+      // Обновляем счетчик дней каждый день
       setInterval(updateDaysCounter, 24 * 60 * 60 * 1000);
     });
-
-    // Привязываем обработчики событий
-    document.getElementById('addPlan').addEventListener('click', addPlan);
-    
-    // Сохраняем счетчики при клике на сердечки/звезды
-    const originalMakeHeart = makeHeart;
-    makeHeart = function(i) {
-      const el = originalMakeHeart(i);
-      el.addEventListener('click', function() {
-        // После увеличения счетчика сохраняем
-        setTimeout(saveCounters, 100);
-      });
-      return el;
-    };
-
-    const originalMakeStar = makeStar;
-    makeStar = function(i) {
-      const el = originalMakeStar(i);
-      el.addEventListener('click', function() {
-        // После увеличения счетчика сохраняем
-        setTimeout(saveCounters, 100);
-      });
-      return el;
-    };
-
-    // Остальные функции (updateDaysCounter, renderCalendar, renderAchievements и т.д.)
-    // остаются без изменений из предыдущего кода...
   </script>
 </body>
 </html>
