@@ -969,47 +969,64 @@
     let plans = [];    let editingIndex = null;
 
     function renderPlans() {
-      const plansContainer = document.getElementById('plansList');
-      plansContainer.innerHTML = '';
-      
-      plans.forEach((plan, index) => {
-        const planElement = document.createElement('div');
-        planElement.className = 'plan-item';
-        const displayTime = plan.time ? ` в ${plan.time}` : '';
-        const formattedDate = formatDate(plan.date);
-        planElement.innerHTML = `
-          <div>
-            <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
-          </div>
-          <div class="plan-actions">
-            <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
-            <button class="delete-btn" onclick="removePlan(${index})">×</button>
-          </div>
-        `;
-        plansContainer.appendChild(planElement);
-      });
-    }
+  const plansContainer = document.getElementById('plansList');
+  console.log('Отрисовка планов:', plans);
+  
+  plansContainer.innerHTML = '';
+  
+  if (plans.length === 0) {
+    plansContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #888;">Пока нет запланированных событий</div>';
+    return;
+  }
+  
+  plans.forEach((plan, index) => {
+    const planElement = document.createElement('div');
+    planElement.className = 'plan-item';
+    const displayTime = plan.time ? ` в ${plan.time}` : '';
+    const formattedDate = formatDate(plan.date);
+    planElement.innerHTML = `
+      <div>
+        <strong>${plan.title}</strong> - ${formattedDate}${displayTime}
+      </div>
+      <div class="plan-actions">
+        <button class="edit-btn" onclick="editPlan(${index})">✏️</button>
+        <button class="delete-btn" onclick="removePlan(${index})">×</button>
+      </div>
+    `;
+    plansContainer.appendChild(planElement);
+  });
+}
 
     function addPlan() {
   const title = document.getElementById('planTitle').value.trim();
   const date = document.getElementById('planDate').value;
   const time = document.getElementById('planTime').value;
   
+  console.log('Добавление плана:', { title, date, time });
+  
   if (title && date) {
     if (editingIndex !== null) {
+      console.log('Редактирование плана с индексом:', editingIndex);
       plans[editingIndex] = { title, date, time };
       editingIndex = null;
       document.getElementById('addPlan').textContent = 'Добавить событие';
     } else {
+      console.log('Добавление нового плана');
       plans.push({ title, date, time });
     }
     
-    // СОХРАНЯЕМ В FIREBASE вместо localStorage
+    // Сначала обновляем интерфейс
+    renderPlans();
+    
+    // Затем сохраняем в Firebase
     savePlansToFirebase();
     
+    // Очищаем форму
     document.getElementById('planTitle').value = '';
     document.getElementById('planDate').value = '';
     document.getElementById('planTime').value = '';
+    
+    console.log('План добавлен, текущие планы:', plans);
   } else {
     alert('Пожалуйста, заполните название и дату события');
   }
@@ -1035,21 +1052,28 @@
 }
     // Загрузка планов из Firebase
 function loadPlansFromFirebase() {
+  console.log('Загрузка планов из Firebase...');
   const plansRef = database.ref('plans');
   plansRef.on('value', (snapshot) => {
     const data = snapshot.val();
+    console.log('Данные из Firebase:', data);
     if (data) {
       plans = Object.values(data);
+      console.log('Планы загружены:', plans);
       renderPlans();
     } else {
       plans = [];
+      console.log('Нет данных в Firebase');
       renderPlans();
     }
+  }, (error) => {
+    console.error('Ошибка загрузки из Firebase:', error);
   });
 }
 
 // Сохранение планов в Firebase
 function savePlansToFirebase() {
+  console.log('Сохранение планов в Firebase:', plans);
   const plansRef = database.ref('plans');
   
   const plansObject = {};
@@ -1063,6 +1087,7 @@ function savePlansToFirebase() {
     })
     .catch((error) => {
       console.error('Ошибка сохранения планов:', error);
+      alert('Ошибка синхронизации: ' + error.message);
     });
 }
 
